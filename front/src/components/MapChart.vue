@@ -131,7 +131,7 @@
             {
               type: 'treemap',
               roamController: {
-                  zoomOnMouseWheel: false // 禁止鼠标滚轮缩放
+                  zoomOnMouseWheel: false // -> 禁止鼠标滚轮缩放 目前无效 需要修改 <-
               },
               data: Object.keys(data).map(city => ({
                 name: city,
