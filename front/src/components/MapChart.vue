@@ -22,7 +22,7 @@
     },
     methods: {
       backToMainMap() {
-          // 重新渲染主图
+          // 重新渲染初始地图
           this.renderMap();
       },
       getData() {
