@@ -35,7 +35,7 @@ export default {
 
       const sortedCounts = field_type_copy.sort((a, b) => field_count_dict[b] - field_count_dict[a]);
       
-      // Filter to only top 50 fields
+      // Filter to only top 30 fields
       const topFields = sortedCounts.slice(0, 30);
 
       // Calculate salary quantiles
