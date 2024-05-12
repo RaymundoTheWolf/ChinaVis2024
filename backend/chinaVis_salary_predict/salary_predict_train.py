@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 import mysql.connector
 import numpy as np
-from salary_predict_model import CNN_Salary_Predict, RNN_Salary_Predict, Transformer_Salary_Predict
+from salary_predict_model import CNN_Salary_Predict, LSTM_Salary_Predict, Transformer_Salary_Predict
 
 job_titles = np.load('../data/job_titles.npy')[::-1]
 cities = np.load('../data/cities.npy')[::-1]
@@ -106,7 +106,7 @@ train_dataset = TensorDataset(train_data, train_labels)
 test_dataset = TensorDataset(test_data, test_labels)
 
 # 定义模型
-model = RNN_Salary_Predict(6, 8)
+model = LSTM_Salary_Predict(6, 8)
 
 # 定义损失函数和优化器
 criterion = nn.CrossEntropyLoss()
