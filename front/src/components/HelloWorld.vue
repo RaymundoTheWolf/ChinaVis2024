@@ -1,18 +1,24 @@
 <template>
-  <div class="chart-container">
-    <MapChart class="map_chart"/> 
-    <titleChart class="title-chart"/>
-  </div>
+  <dv-full-screen-container>
+    <top-header />
+    <div class="chart-container">
+      <mapChart class="map_chart"/> 
+      <titleChart class="title-chart"/>
+    </div>
+  </dv-full-screen-container>
+  
 </template>
 
 <script>
-import MapChart from './MapChart.vue'; 
+import mapChart from './mapChart.vue'; 
 import titleChart from './titleChart.vue'
+import topHeader from './topHeader.vue'
 
 export default {
   components: {
-    MapChart,
-    titleChart 
+    mapChart,
+    titleChart,
+    topHeader
   },
 }
 </script>
@@ -26,6 +32,7 @@ export default {
 .map_chart {
   width: 50%; 
   height: 1000px;
+  margin-left: -100px;
 }
 
 .title-chart {
