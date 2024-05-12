@@ -60,7 +60,7 @@ def get_field_map_data():
 def handle_filed_click():
     data = request.json
     field_name = data.get('field')
-    # Do something with the clicked city name
+    # 一些什么修改
     print("City clicked:", field_name)
     return jsonify({'message': 'City click data received.'})
 
