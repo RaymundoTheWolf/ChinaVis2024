@@ -4,14 +4,14 @@ from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 import mysql.connector
 import numpy as np
-from salary_predict_model import CNN_Salary_Predict
+from salary_predict_model import CNN_Salary_Predict, RNN_Salary_Predict, Transformer_Salary_Predict
 
-job_titles = np.load('../data/job_titles.npy')
-cities = np.load('../data/cities.npy')
-company = np.load('../data/company.npy')
-experience = np.load('../data/experience.npy')
-education = np.load('../data/education.npy')
-company_type = np.load('../data/company_type.npy')
+job_titles = np.load('../data/job_titles.npy')[::-1]
+cities = np.load('../data/cities.npy')[::-1]
+company = np.load('../data/company.npy')[::-1]
+experience = np.load('../data/experience.npy')[::-1]
+education = np.load('../data/education.npy')[::-1]
+company_type = np.load('../data/company_type.npy')[::-1]
 
 
 def load_data_from_database():
@@ -20,7 +20,7 @@ def load_data_from_database():
         host="localhost",
         user="root",
         port="3306",
-        password="",
+        password="a21340201152044",
         database="JobWanted"
     )
 
@@ -73,11 +73,15 @@ for i, row in enumerate(data_from_db):
     company_index = company_dict.get(company, -1)
     company_type_index = company_type_dict.get(company_type, -1)
 
-    data_array[i] = [job_title_index, city_index, experience_index, education_index, company_index, company_type_index, avg_monthly_salary]
+    data_array[i] = [job_title_index * 0.66,
+                     city_index * 0.24,
+                     experience_index * 0.38,
+                     education_index * 0.25,
+                     company_index * 0.63,
+                     company_type_index * 0.32, avg_monthly_salary]
 
 # 定义每个区间的最小和最大工资
-salary_segments = [(330, 4500), (4500, 5500), (5500, 6500), (6500, 7500),
-                   (7500, 8500), (8500, 10500), (10500, 16000), (16000, 255000)]
+salary_segments = [(0, 5000), (5000, 6500), (6500, 8500), (8500, 12500), (12500, 300000)]
 
 # 初始化label数组
 labels = np.zeros(len(data_from_db))
@@ -102,28 +106,27 @@ train_dataset = TensorDataset(train_data, train_labels)
 test_dataset = TensorDataset(test_data, test_labels)
 
 # 定义模型
-model = CNN_Salary_Predict(6, 8)
+model = RNN_Salary_Predict(6, 8)
 
 # 定义损失函数和优化器
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(params=model.parameters(), lr=0.0008)
 
 # 定义超参数
 num_epochs = 10
-batch_size = 2048
 
 # 定义DataLoader
-train_loader = DataLoader(train_dataset, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_dataset)
 
 # 训练模型
 running_loss = 0.0
 correct = 0
 total = 0
-times = 0
 
 for epoch in range(num_epochs):
     model.train()
+    times = 0
     for i, (inputs, labels) in enumerate(train_loader, 1):
         optimizer.zero_grad()
         outputs = model(inputs)
@@ -155,8 +158,7 @@ total = 0
 with torch.no_grad():
     for inputs, labels in test_loader:
         outputs = model(inputs)
-
-        _, predicted = torch.max(outputs, 1)
+        _, predicted = torch.max(outputs, 0)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
