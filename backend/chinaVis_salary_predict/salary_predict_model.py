@@ -33,12 +33,14 @@ class RNN_Salary_Predict(nn.Module):
         self.input_size = input_size
         self.output_size = output_size
         self.rnn = nn.RNN(input_size=input_size, hidden_size=256, num_layers=3, batch_first=True)
+        self.layer_norm = nn.LayerNorm(256)  # 添加层归一化层
         self.fc1 = nn.Linear(256, output_size * 2)
         self.fc2 = nn.Linear(output_size * 2, output_size)
 
     def forward(self, x):
         x = x.unsqueeze(dim=1)
         out, _ = self.rnn(x)
+        out = self.layer_norm(out)  # 对RNN的输出进行层归一化
         out = out.squeeze()
         out = self.fc1(out)
         out = F.relu(out)

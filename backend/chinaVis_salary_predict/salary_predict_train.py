@@ -116,7 +116,7 @@ optimizer = torch.optim.Adam(params=model.parameters(), lr=0.0008)
 num_epochs = 10
 
 # 定义DataLoader
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 test_loader = DataLoader(test_dataset)
 
 # 训练模型
