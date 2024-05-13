@@ -215,13 +215,12 @@ def handle_job_parallel():
         avg_monthly_salary = row[5]
 
         # 将每一列转换为索引位置/列的长度
-        job_title_index = job_titles_dict.get(job_title, -1)
         city_index = cities_dict.get(city, -1)
         experience_index = experience_dict.get(experience, -1)
         education_index = education_dict.get(education, -1)
         company_index = company_dict.get(company, -1)
 
-        data_array[i] = [job_title_index,
+        data_array[i] = [job_title,
                          city_index,
                          experience_index,
                          education_index,
