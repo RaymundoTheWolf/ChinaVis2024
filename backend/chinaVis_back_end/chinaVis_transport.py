@@ -159,5 +159,75 @@ def handle_job_title_comparison():
                     'salary': salary})
 
 
+"""
+职业平行图部分
+"""
+
+
+@app.route('/job_parallel_all', methods=['POST'])
+def handle_job_parallel():
+    data = request.json
+    companyType = data.get('companyType', 'type_BLfSmG')
+    # 连接数据库
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        port="3306",
+        password="123456",
+        database="JobWanted"
+    )
+    cursor = conn.cursor()
+
+    # 根据行业类型查询数据
+    query_company_type = "SELECT job_title, city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = %s"
+    cursor.execute(query_company_type, (companyType,))
+    data = cursor.fetchall()
+
+    # 关闭数据库连接
+    cursor.close()
+    conn.close()
+
+    job_titles = np.load('../data/job_titles.npy')[::-1]
+    cities = np.load('../data/cities.npy')[::-1]
+    company = np.load('../data/company.npy')[::-1]
+    experience = np.load('../data/experience.npy')[::-1]
+    education = np.load('../data/education.npy')[::-1]
+
+    # 将job_titles转换为字典，便于查找索引
+    job_titles_dict = {title: index / len(job_titles) for index, title in enumerate(job_titles)}
+    cities_dict = {city: index / len(cities) for index, city in enumerate(cities)}
+    experience_dict = {exp: index / len(experience) for index, exp in enumerate(experience)}
+    education_dict = {edu: index / len(education) for index, edu in enumerate(education)}
+    company_dict = {comp: index / len(company) for index, comp in enumerate(company)}
+
+    # 将数据转换为NumPy数组
+    data_array = np.zeros((len(data), 6))  # 初始化一个数组来保存数据
+    print(data)
+    for i, row in enumerate(data):
+        job_title = row[0]
+        city = row[1]
+        experience = row[2]
+        education = row[3]
+        company = row[4]
+        avg_monthly_salary = row[5]
+
+        # 将每一列转换为索引位置/列的长度
+        job_title_index = job_titles_dict.get(job_title, -1)
+        city_index = cities_dict.get(city, -1)
+        experience_index = experience_dict.get(experience, -1)
+        education_index = education_dict.get(education, -1)
+        company_index = company_dict.get(company, -1)
+
+        data_array[i] = [job_title_index,
+                         city_index,
+                         experience_index,
+                         education_index,
+                         company_index,
+                         avg_monthly_salary]
+
+    # 返回结果
+    return jsonify(data_array.tolist())
+
+
 if __name__ == '__main__':
     app.run(debug=True)
