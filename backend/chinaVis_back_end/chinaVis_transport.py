@@ -181,9 +181,9 @@ def handle_job_parallel():
     )
     cursor = conn.cursor()
 
-    # 查询所有公司类型
-    query_company_type = "SELECT job_title, city, experience, education, company, company_type, `Avg Monthly Salary` FROM rec_inf"
-    cursor.execute(query_company_type)
+    # 根据行业类型查询数据
+    query_company_type = "SELECT job_title, city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = %s"
+    cursor.execute(query_company_type, (companyType,))
     data = cursor.fetchall()
 
     # 关闭数据库连接
@@ -195,7 +195,6 @@ def handle_job_parallel():
     company = np.load('../data/company.npy')[::-1]
     experience = np.load('../data/experience.npy')[::-1]
     education = np.load('../data/education.npy')[::-1]
-    company_type = np.load('../data/company_type.npy')[::-1]
 
     # 将job_titles转换为字典，便于查找索引
     job_titles_dict = {title: index / len(job_titles) for index, title in enumerate(job_titles)}
@@ -203,10 +202,9 @@ def handle_job_parallel():
     experience_dict = {exp: index / len(experience) for index, exp in enumerate(experience)}
     education_dict = {edu: index / len(education) for index, edu in enumerate(education)}
     company_dict = {comp: index / len(company) for index, comp in enumerate(company)}
-    company_type_dict = {ctype: index / len(company_type) for index, ctype in enumerate(company_type)}
 
     # 将数据转换为NumPy数组
-    data_array = np.zeros((len(data), 7))  # 初始化一个数组来保存数据
+    data_array = np.zeros((len(data), 6))  # 初始化一个数组来保存数据
     print(data)
     for i, row in enumerate(data):
         job_title = row[0]
@@ -214,7 +212,6 @@ def handle_job_parallel():
         experience = row[2]
         education = row[3]
         company = row[4]
-        company_type = row[5]
         avg_monthly_salary = row[6]
 
         # 将每一列转换为索引位置/列的长度
@@ -223,14 +220,12 @@ def handle_job_parallel():
         experience_index = experience_dict.get(experience, -1)
         education_index = education_dict.get(education, -1)
         company_index = company_dict.get(company, -1)
-        company_type_index = company_type_dict.get(company_type, -1)
 
         data_array[i] = [job_title_index,
                          city_index,
                          experience_index,
                          education_index,
                          company_index,
-                         company_type_index,
                          avg_monthly_salary]
 
     # 返回结果
