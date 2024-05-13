@@ -163,7 +163,7 @@ def handle_job_title_comparison():
 
 
 """
-职业平行图部分
+职业平行图获取数据
 """
 
 
@@ -230,6 +230,24 @@ def handle_job_parallel():
 
     # 返回结果
     return jsonify(data_array.tolist())
+
+
+"""
+职业平行图查询对应曲线
+"""
+
+
+@app.route('/job_parallel_line', methods=['POST'])
+def getJobTitle():
+    data = request.json
+    jobTitle = data.get('jobTitle')
+    if jobTitle == '':
+        return "null"
+    job_titles = np.load('../data/job_titles.npy')[::-1]
+    for index, title in enumerate(job_titles):
+        if title == jobTitle:
+            return index / len(job_titles)
+    return "FALSE"
 
 
 if __name__ == '__main__':
