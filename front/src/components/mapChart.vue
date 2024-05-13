@@ -1,12 +1,14 @@
 <template>  
   <div>  
-    <!-- 创建一个容器来放置图表 -->  
-        <div ref="chart" style="width: 1000px; height: 800px;"></div>
-        <!-- 添加一个按钮 -->  
-        <el-button id="backbutton" class="renderbutton" @click="backToPreviousMap">返回上一级</el-button>
+    <!-- 创建一个容器来放置图表和按钮 -->  
+    <div style="position: relative; width: 1100px;"> <!-- 增加宽度以容纳按钮 -->
+      <div ref="chart" style="width: 1000px; height: 800px;"></div>
+      <div ref="lineChart" style="width: 1000px; height: 400px; margin-top: -100px;"></div> <!-- 新增折线图容器 -->
+      <!-- 添加一个按钮 -->  
+      <el-button id="backbutton" class="renderbutton" @click="backToPreviousMap" style="position: absolute; right: 0; top: 400px;">返回上一级</el-button>
+    </div>
   </div>
-  
-</template>  
+</template>   
   
 <script>  
 import axios from 'axios';  
@@ -31,7 +33,8 @@ export default {
       this.currentChart = echarts.init(chartDom);  
       this.currentChart.on('click', params => {  
         // 获取点击的区域名字  
-        const clickedCityName = params.name;  
+        const clickedCityName = params.name;
+        sessionStorage.setItem('lastClickedCity', clickedCityName);
         // 过滤出以该区域名字首字母开头的城市的平均工作数量和平均薪资数据  
         const filteredData = {};  
         for (const city in this.mapData.city_count_dict) {  
@@ -47,25 +50,92 @@ export default {
       });  
     }, 
     backToPreviousMap() {  
-      // 如果子地图配置堆栈中有元素，则弹出并渲染  
+      // 如果子地图配置堆栈中有元素，则弹出并渲染
+      //如果需要，可以清除localStorage中的lastClickedCity  
+      localStorage.removeItem('lastClickedCity'); 
+      this.subChartOptionsStack.pop();
       if (this.subChartOptionsStack.length > 0) {  
-        const prevOption = this.subChartOptionsStack.pop();  
+        const prevOption = this.subChartOptionsStack.pop(); // 直接弹出顶部配置项  
         this.currentChart.setOption(prevOption);  
       } else if (this.mainChartOptions) {  
         // 如果没有子地图配置，但主地图配置存在，则返回主地图  
         this.currentChart.setOption(this.mainChartOptions);  
-      }  
+      }    
     },   
     getData() {  
       axios.get('http://127.0.0.1:5000/region_map_data')  
         .then(response => {  
           this.mapData = response.data;  
-          this.renderMap();  
+          this.renderMap();
+          this.initLineChart(); // 初始化折线图
         })  
         .catch(error => {  
           console.error('Error fetching map data:', error);  
         });  
-    },  
+    },
+
+    //条形图绘制代码
+    initLineChart() {  
+      const lineChartDom = this.$refs.lineChart;  
+      const lineChartInstance = echarts.init(lineChartDom);  
+        
+      // 使用mapData中的city_avg_salary_dict来配置折线图  
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          position: function (pt) {
+            return [pt[0], '10%'];
+          }
+        },
+        xAxis: {
+          name: 'city',
+          type: 'category',
+          boundaryGap: false,
+          data: Object.keys(this.mapData.city_avg_salary_dict) // 城市代号作为横坐标
+        },
+        yAxis: {
+          name: 'salary',
+          type: 'value',
+          boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+          {
+            type: 'inside',
+            start: 0,
+            end: 10
+          },
+          {
+            start: 0,
+            end: 10
+          }
+        ],
+        series: [
+          {
+            name: 'Average Salary',
+            type: 'line',
+            symbol: 'none',
+            sampling: 'lttb',
+            itemStyle: {
+              color: 'rgb(255, 70, 131)'
+            },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgb(255, 158, 68)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgb(255, 70, 131)'
+                }
+              ])
+            },
+            data: Object.values(this.mapData.city_avg_salary_dict), // 薪水作为纵坐标
+          }
+        ]
+      }; 
+      lineChartInstance.setOption(option);  
+    },
     renderMap() {  
       const { city_count_dict, city_avg_salary_dict } = this.mapData;
       
@@ -109,7 +179,6 @@ export default {
         const chartDom = this.$refs.chart;  
         this.currentChart = echarts.init(chartDom);  
       }
-
       // 配置项
       const option = {
         series: [
@@ -127,7 +196,18 @@ export default {
                 const colorRatio = (mergedAvgSalary[city[0]] - minAvgSalary) / (maxAvgSalary - minAvgSalary);
                 // 根据颜色深浅程度返回颜色
                 return echarts.color.modifyHSL('#4682B4', colorRatio * 100, 0);
-              })()
+              })(),
+              emphasis: {  
+              // 当鼠标悬停时，可以改变颜色、边框等视觉效果  
+              itemStyle: {  
+                // 例如，改变边框宽度或颜色  
+                borderWidth: 2, // 可以根据需要调整  
+                borderColor: 'rgba(0,0,0,0.5)', // 可以设置更明显的颜色  
+                // 如果需要模拟放大效果，可以尝试改变阴影  
+                shadowBlur: 10, // 阴影大小  
+                shadowColor: 'rgba(0, 0, 0, 0.5)' // 阴影颜色  
+               }  
+             }
             }))
           }
         ]
@@ -157,14 +237,26 @@ export default {
               name: city,
               value: data[city].count > 10000 ? data[city].count / 15 : data[city].count,
               // 设置区域颜色深浅
-              color: echarts.color.modifyHSL('#4682B4', 0, 50 - (data[city].avgSalary - Math.min(...Object.values(data)))/(Math.max(...Object.values(data))-Math.min(...Object.values(data)))*50)
+              color: echarts.color.modifyHSL('#4682B4', 0, 50 - (data[city].avgSalary - Math.min(...Object.values(data)))
+              /(Math.max(...Object.values(data))-Math.min(...Object.values(data)))*50),
+              emphasis: {  
+                // 当鼠标悬停时，可以改变颜色、边框等视觉效果  
+                itemStyle: {  
+                  // 例如，改变边框宽度或颜色  
+                  borderWidth: 2, // 可以根据需要调整  
+                  borderColor: 'rgba(0,0,0,0.5)', // 可以设置更明显的颜色  
+                  // 如果需要模拟放大效果，可以尝试改变阴影  
+                  shadowBlur: 10, // 阴影大小  
+                  shadowColor: 'rgba(0, 0, 0, 0.5)' // 阴影颜色  
+                }  
+              }
             }))
           }
         ]  
       };  
       // 如果当前是用户交互（如点击事件），则推入堆栈  
       if (isUserInteraction) {  
-        this.subChartOptionsStack.push(option);  
+        this.subChartOptionsStack.push(option); 
       }   
         
       // 使用配置项绘制图表  
@@ -178,19 +270,3 @@ export default {
   }  
 };  
 </script>  
-  
-<style>  
-.renderbutton {  
-  position: relative;
-  margin-top: 20px;
-  width: 300px;
-  left: 20%;
-}
-.dv-decoration-12 {
-    position: relative;
-    width: 95%;
-    left: 30%;
-    height: 5px;
-    bottom: 20px;
-  }
-</style>
