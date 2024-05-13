@@ -132,7 +132,7 @@ export default {
       chart.on('click', params => {
         if (params.data && params.data.real_name) {
           const fieldName = params.data.real_name;
-          sessionStorage.setItem('lastClickedCity', fieldName);
+          sessionStorage.setItem('lastFieldName', fieldName);
           axios.post('http://127.0.0.1:5000/field_click', { field: fieldName })
             .then(response => {
               console.log('Field clicked:', fieldName);
