@@ -90,7 +90,7 @@
   
   .select1,
   .select2 {
-    width: 30%; /* 设置选择框的宽度 */
+    width: 31%; /* 设置选择框的宽度 */
   }
   
   .search-button {
