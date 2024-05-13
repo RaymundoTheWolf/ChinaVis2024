@@ -1,14 +1,9 @@
 <template>  
   <div>  
-    <!-- 设置边框 
-    <dv-border-box-12 >
-        
-    </dv-border-box-12>-->
     <!-- 创建一个容器来放置图表 -->  
-        <div ref="chart" style="width: 1000px; height: 800px;"></div>  
-    <!-- 添加一个按钮 -->  
-    <button @click="backToPreviousMap">返回上一级</button>
-      
+        <div ref="chart" style="width: 1000px; height: 800px;"></div>
+        <!-- 添加一个按钮 -->  
+        <el-button id="backbutton" class="renderbutton" @click="backToPreviousMap">返回上一级</el-button>
   </div>
   
 </template>  
@@ -185,15 +180,17 @@ export default {
 </script>  
   
 <style>  
-.button-container {  
-  text-align: center;  
-  margin-top: 10px;  
+.renderbutton {  
+  position: relative;
+  margin-top: 20px;
+  width: 300px;
+  left: 20%;
 }
 .dv-decoration-12 {
-    position: absolute;
+    position: relative;
     width: 95%;
-    left: 2.5%;
+    left: 30%;
     height: 5px;
-    bottom: 0px;
+    bottom: 20px;
   }
 </style>
