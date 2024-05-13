@@ -1,10 +1,16 @@
 <template>  
   <div>  
+    <!-- 设置边框 
+    <dv-border-box-12 >
+        
+    </dv-border-box-12>-->
     <!-- 创建一个容器来放置图表 -->  
-    <div ref="chart" style="width: 100%; height: 600px;"></div>  
+        <div ref="chart" style="width: 1000px; height: 800px;"></div>  
     <!-- 添加一个按钮 -->  
-    <button @click="backToPreviousMap">返回上一级</button>  
-  </div>  
+    <button @click="backToPreviousMap">返回上一级</button>
+      
+  </div>
+  
 </template>  
   
 <script>  
@@ -182,5 +188,12 @@ export default {
 .button-container {  
   text-align: center;  
   margin-top: 10px;  
-}  
+}
+.dv-decoration-12 {
+    position: absolute;
+    width: 95%;
+    left: 2.5%;
+    height: 5px;
+    bottom: 0px;
+  }
 </style>
