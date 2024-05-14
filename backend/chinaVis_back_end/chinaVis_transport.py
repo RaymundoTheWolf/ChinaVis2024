@@ -246,7 +246,6 @@ def handle_job_parallel():
                          avg_monthly_salary]
 
     # 返回结果
-    print(data_array.tolist())
     return jsonify({"data": data_array.tolist(), "job": job_titles_list})
 
 if __name__ == '__main__':

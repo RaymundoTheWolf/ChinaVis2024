@@ -1,13 +1,16 @@
-<template>  
-    <div>
-        <el-input v-model="inputJobTitle" placeholder="请输入职位"  class="input"/>
-        <el-button class="search-button" type="primary" @click="shift">筛选</el-button>
-        <el-button class="search-button" type="primary" @click="clear">清空</el-button>
-        
-        <!-- 创建一个容器来放置图表 -->  
-        <div ref="chart" style="width: 100%; height: 1000px;"></div>
-    </div>
+<template>
+  <div id="parallel-chart">
+      <div class="input-button-container">
+          <el-input v-model="inputJobTitle" placeholder="请输入职位" class="input"/>
+          <el-button class="search-button" type="primary" @click="shift">筛选</el-button>
+          <el-button class="search-button" type="primary" @click="clear">清空</el-button>
+      </div>
+      <!-- 创建一个容器来放置图表 -->
+      <div ref="chart" style="width: 100%; height: 100%;"></div>
+  </div>
 </template>
+
+
 <script>
   import axios from 'axios';  
   import * as echarts from 'echarts';
@@ -108,7 +111,7 @@
             {dim: 3, name: '公司'},
             ],
             visualMap: {
-              show: true,
+              show: false,
               min: 0,
               max: 1,
               dimension: 2,
@@ -119,8 +122,8 @@
             },
             parallel: {
               left: '5%',
-              right: '18%',
-              bottom: 100,
+              right: '5%',
+              bottom: '6%',
               parallelAxisDefault: {
                 type: 'value',
                 nameTextStyle: {
@@ -157,19 +160,41 @@
   </script>
   
   <style>
-  .container {
+  /* 基础样式 */
+#parallel-chart {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 800px; /* 设置容器的最大宽度 */
-    margin: 0 auto; /* 水平居中 */
-  }
-  
-  .input {
-    width: 31%; /* 设置输入框的宽度 */
-  }
-  
-  .search-button {
-    width: 15%; /* 设置按钮的宽度 */
-  }
-  </style>
+    width: 100%;
+    height: 100%;
+    padding: 20px; /* 内边距，可根据需要调整 */
+    box-sizing: border-box; /* 使得padding不会影响整体尺寸 */
+    flex-direction: column;
+}
+
+/* 输入框和按钮的容器样式 */
+#parallel-chart .input-button-container {
+    display: flex;
+    flex-direction: row;
+    height: 12%;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* 输入框样式 */
+#parallel-chart .el-input {
+    flex-shrink: 1; /* 输入框将占据剩余空间 */
+    height: 50%;
+    flex-basis: 50%;
+}
+/* 搜索按钮样式 */
+#parallel-chart .search-button {
+  flex-basis: 10%;
+  margin-left: 10px; /* 按钮之间留出空间 */
+}
+
+/* 图表容器样式 */
+#parallel-chart div[ref="chart"] {
+  flex-shrink: 1;
+  width: 100%; /* 图表容器宽度为100%，可以占据父容器的全部宽度 */
+  height: auto; /* 图表容器高度，可根据需要调整 */
+}
+</style>
