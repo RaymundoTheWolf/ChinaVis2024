@@ -7,7 +7,7 @@ def get_salary_ranges():
         host="localhost",
         user="root",
         port="3306",
-        password="123456",
+        password="a21340201152044",
         database="JobWanted"
     )
 
@@ -32,13 +32,13 @@ def get_salary_ranges():
     salaries = [salary[0] for salary in salaries]
 
     # 计算每个段的大小
-    segment_size = len(salaries) // 8
+    segment_size = len(salaries) // 5
     salary_ranges = []
 
-    for i in range(8):
+    for i in range(5):
         start_index = i * segment_size
         end_index = start_index + segment_size
-        if i == 7:  # 最后一段
+        if i == 4:  # 最后一段
             end_index = len(salaries)
         segment_salaries = salaries[start_index:end_index]
         salary_range = (min(segment_salaries), max(segment_salaries))

@@ -1,16 +1,20 @@
 <template>
-  <div ref="title" class="title-chart">
+  <div>
+    <div ref="title" class="title-chart"></div>
+    <div class="click-info">{{ clickedFieldName }}</div>
   </div>
 </template>
 
 <script>
 import * as echarts from 'echarts';
 import axios from 'axios';
+import { EventBus } from './eventBus.js';
 
 export default {
   data() {
     return {
-      sunburstData: null
+      sunburstData: null,
+      clickedFieldName: ''
     }
   },
   mounted() {
@@ -37,7 +41,7 @@ export default {
       const sortedCounts = field_type_copy.sort((a, b) => field_count_dict[b] - field_count_dict[a]);
       
       // Filter to only top 30 fields
-      const topFields = sortedCounts.slice(0, 30);
+      const topFields = sortedCounts.slice(0, 50);
 
       // Calculate salary quantiles
       const quantiles = [
@@ -49,11 +53,11 @@ export default {
 
       // Define salary ranges
       const salaryRanges = [
-        { name: 'Low Salary', min: 0, max: quantiles[0] },
-        { name: 'Moderate Salary', min: quantiles[0], max: quantiles[1] },
-        { name: 'Average Salary', min: quantiles[1], max: quantiles[2] },
-        { name: 'High Salary', min: quantiles[2], max: quantiles[3] },
-        { name: 'Very High Salary', min: quantiles[3], max: Infinity }
+        { name: '低: 0 ~'+quantiles[0], min: 0, max: quantiles[0] },
+        { name: '较低: '+quantiles[0]+'~'+quantiles[1], min: quantiles[0], max: quantiles[1] },
+        { name: '中等: '+quantiles[1]+`~`+quantiles[2], min: quantiles[1], max: quantiles[2] },
+        { name: '较高: '+quantiles[2]+'~'+quantiles[3], min: quantiles[2], max: quantiles[3] },
+        { name: '高'+quantiles[3]+'~'+19766.667, min: quantiles[3], max: Infinity }
       ];
 
       // Store fields in corresponding salary ranges
@@ -70,22 +74,34 @@ export default {
         }
       });
 
-      const colorBar = ['#B08D61', '#A4917D', '#8F7D5F', '#C4A985', '#725F4D']
-
+      const baseColors = ['#4CAF50', '#FFEB3B', '#007BFF', '#006400', '#FF0000'];
+      
+      const topFields1 = topFields.map(field => field.replace(/^type_/, ''));  
 
       // Build sunburst data
-      const data = salaryRanges.map((range, i) => ({
-        name: range.name,
-        color:colorBar[i],
-        children: salaryGroups[i].map(field => ({
-          real_name: field,
-          name: topFields.includes(field) ? field : null, // Only show names for top 50 values
-          value: field_count_dict[field] || 0,
-          itemStyle: {
-            color: echarts.color.modifyHSL(colorBar[i], Math.round(field_avg_salary_dict[field]) * 100)
-          }
-        }))
-      }));
+      const data = salaryRanges.map((range, i) => ({  
+          name: range.name,  
+          color: baseColors[i], // Set the base color for the current range  
+          children: salaryGroups[i].map(field => {  
+            // Remove 'type_' prefix from the field name  
+            const fieldNameWithoutPrefix = field.replace(/^type_/, '');  
+              
+            // Adjust the brightness based on salary, but scale it down to avoid extreme values  
+            const brightnessAdjustment = 0.5 * (2 * (field_avg_salary_dict[field] - 5179.2963) / (19766.667 - 5179.2963)) - 0.5; // Your brightness adjustment logic  
+            const adjustedBrightness = Math.max(0, Math.min(1, 0.5 + brightnessAdjustment)); // Your adjusted brightness calculation  
+          
+            return {  
+              real_name: field, // Keep the original field name for other purposes  
+              name: topFields1.includes(fieldNameWithoutPrefix) ? fieldNameWithoutPrefix : null, // Use the field name without prefix for display  
+              value: field_count_dict[field] || 0,  
+              itemStyle: {  
+                color: echarts.color.modifyHSL(baseColors[i], null, adjustedBrightness)  
+              }  
+            };  
+          })  
+        })); 
+
+
 
       // Build series data
       const seriesData = [{
@@ -105,7 +121,8 @@ export default {
         tooltip: {
           formatter: function (params) {
             if (params.data && params.data.real_name) {
-              return 'Field Type: ' + params.data.real_name;
+              let name = params.data.real_name.replace(/^type_/, '');
+              return name;
             }
           },
           trigger: 'item' // 触发类型设置为'item'，使得可以在鼠标悬停时触发
@@ -118,7 +135,9 @@ export default {
 
       chart.on('click', params => {
         if (params.data && params.data.real_name) {
+          this.clickedFieldName = "当前显示"+params.data.real_name.replace(/^type_/, ''); // 更新显示框内容
           const fieldName = params.data.real_name;
+          sessionStorage.setItem('lastFieldName', fieldName);
           axios.post('http://127.0.0.1:5000/field_click', { field: fieldName })
             .then(response => {
               console.log('Field clicked:', fieldName);
@@ -128,9 +147,29 @@ export default {
               console.error('Error sending field click data:', error);
             });
         }
+        EventBus.$emit('value-updated', params.data.real_name);
       });
     }
   }
 }
 </script>
+
+<style>
+.title-chart {
+  width: 100%;
+  height: 1000px;
+  position: relative; /* 确保旭日图容器有正确的位置 */
+}
+.click-info {
+  position: absolute;
+  top: 10px;
+  left: 500px;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: 150px;
+  height: 10px;
+}
+</style>
 
