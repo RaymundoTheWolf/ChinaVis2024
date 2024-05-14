@@ -35,23 +35,15 @@
     },
     methods: {
       getData() {
-        console.log("开始发送");
-        if(this.companyType == '') {
-          this.companyType = 'type_aAuygy';
-        }
-        axios.post('http://127.0.0.1:5000/job_parallel_all',{
-            companyType : this.companyType 
-            })
-            .then(response => {
-                this.paralleldata = response.data.data;
-                this.allJobTitle = response.data.job;
-                console.log(this.paralleldata);
-                console.log(this.allJobTitle);
-                this.initChart();
-            })
-            .catch(error => {
-                console.error('Error sending job title comparison data:', error);
-            });
+        axios.post('http://127.0.0.1:5000/job', {
+          companyType : this.companyType 
+        })
+        .then(response => {
+          this.jobTitles = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching checkbox data:', error);
+        });
       },
       //筛选职位
       shift() {

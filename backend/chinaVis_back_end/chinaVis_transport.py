@@ -113,6 +113,7 @@ def fetch_data(query, param):
     conn.close()
     return results
 
+
 @app.route('/job_title_comparison', methods=['POST'])
 def handle_job_title_comparison():
     data = request.json
@@ -186,7 +187,7 @@ def handle_job_title_comparison():
 """
 
 
-@app.route('/job_parallel_all', methods=['POST'])
+@app.route('/job', methods=['POST'])
 def handle_job_parallel():
     data = request.json
     companyType = data.get('companyType', 'type_BLfSmG')
@@ -195,7 +196,7 @@ def handle_job_parallel():
         host="localhost",
         user="root",
         port="3306",
-        password="123456",
+        password="a21340201152044",
         database="JobWanted"
     )
     cursor = conn.cursor()
@@ -247,6 +248,7 @@ def handle_job_parallel():
 
     # 返回结果
     return jsonify({"data": data_array.tolist(), "job": job_titles_list})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
