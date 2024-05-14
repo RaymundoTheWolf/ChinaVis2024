@@ -3,6 +3,7 @@ import App from './App.vue'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import dataV from '@jiaminghi/data-view'
+import 'echarts-gl';
 
 Vue.use(dataV)
 

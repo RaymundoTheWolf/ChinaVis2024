@@ -60,11 +60,33 @@ def get_field_map_data():
     return jsonify(field_map_data)
 
 
+"""
+多维度分析salary 3D散点图
+"""
+
+
+@app.route('/3d_scatter_data', methods=['GET'])
+def get_3d_scatter_data():
+    # 从文件中读取字典数据
+    with open('../data/scatterDate/job_dict.json', 'r') as f:
+        job_dict = json.load(f)
+    # 构建要发送给前端的数据字典
+    scatter_data = {
+        'job_dict': job_dict
+    }
+
+    # 将数据转换为 JSON 格式并发送给前端
+    return jsonify(scatter_data)
+
+
 @app.route('/field_click', methods=['POST'])
 def handle_filed_click():
     data = request.json
     field_name = data.get('field')
     # 点击函数实现
+    """
+        此处留有3D散点图的数据跳转
+    """
     print("City clicked:", field_name)
     return jsonify({'message': 'City click data received.'})
 
