@@ -82,7 +82,7 @@ def send_checkbox_data():
         host="localhost",
         user="root",
         port="3306",
-        password="a21340201152044",
+        password="123456",
         database="JobWanted"
     )
     query = f"SELECT job_title FROM rec_inf WHERE company_type = '{type_name}'"
@@ -103,7 +103,7 @@ def fetch_data(query, param):
         host="localhost",
         user="root",
         port="3306",
-        password="a21340201152044",
+        password="123456",
         database="JobWanted"
     )
     cursor = conn.cursor()
@@ -187,7 +187,7 @@ def handle_job_title_comparison():
 """
 
 
-@app.route('/job', methods=['POST'])
+@app.route('/job_parallel_all', methods=['POST'])
 def handle_job_parallel():
     data = request.json
     companyType = data.get('companyType', 'type_BLfSmG')
@@ -196,7 +196,7 @@ def handle_job_parallel():
         host="localhost",
         user="root",
         port="3306",
-        password="a21340201152044",
+        password="123456",
         database="JobWanted"
     )
     cursor = conn.cursor()
