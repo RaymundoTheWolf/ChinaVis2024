@@ -3,6 +3,8 @@ from flask_cors import CORS
 import numpy as np
 import json
 import mysql.connector
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
 app = Flask(__name__)
 CORS(app)  # 允许跨域请求
@@ -92,7 +94,7 @@ def send_checkbox_data():
     # 关闭数据库连接
     cursor.close()
     conn.close()
-    return jsonify(results)
+    return jsonify(results[:1000])
 
 
 @app.route('/job_title_comparison', methods=['POST'])
@@ -100,6 +102,7 @@ def handle_job_title_comparison():
     data = request.json
     job_title = data.get('jobTitle', 'e0dd920456695914fed9481503e83b41xW')
     type_name = data.get('typeName')
+    job_titles = data.get('jobList')
 
     # 连接数据库
     conn = mysql.connector.connect(
@@ -111,23 +114,29 @@ def handle_job_title_comparison():
     )
     cursor = conn.cursor()
 
-    # 查询城市、工作经验、教育程度和公司
-    query = f"SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE job_title = '{job_title}'"
-    cursor.execute(query)
+    # 使用参数化查询以防止 SQL 注入攻击，并优化查询以减少数据传输量
+    query = "SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE job_title = %s"
+    cursor.execute(query, (job_title,))
     results_job = cursor.fetchall()
 
-    query = f"SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = '{type_name}'"
-    cursor.execute(query)
+    query = "SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = %s"
+    cursor.execute(query, (type_name,))
     results_title = cursor.fetchall()
 
     # 关闭数据库连接
     cursor.close()
     conn.close()
 
-    # 将查询结果转换为 NumPy 矩阵
-    # 创建空的 NumPy 数组来保存索引值和平均月薪
-    matrix_job = np.empty((len(results_job), 3))
-    matrix_title = np.empty((len(results_title), 3))
+    # 使用 Pandas 加速数据处理
+    df_job = pd.DataFrame(results_job, columns=['city', 'experience', 'education', 'company', 'Avg Monthly Salary'])
+    df_title = pd.DataFrame(results_title, columns=['city', 'experience', 'education', 'company', 'Avg Monthly Salary'])
+
+    max_salary = df_title['Avg Monthly Salary'].max()
+    min_salary = df_title['Avg Monthly Salary'].min()
+
+    city_counts = df_title['city'].value_counts()
+    city_name = city_counts.index.tolist()
+    city_times = city_counts.values.tolist()
 
     cities = np.load('../data/cities.npy')[::-1]
     experience = np.load('../data/experience.npy')[::-1]
@@ -137,26 +146,39 @@ def handle_job_title_comparison():
     experience_mapping = {exp: index / len(experience) for index, exp in enumerate(experience)}
     education_mapping = {edu: index / len(education) for index, edu in enumerate(education)}
 
-    # 将查询结果转换为索引值并填充到 NumPy 数组中
-    for i, result in enumerate(results_job):
-        city_index = city_mapping.get(result[0], -1)
-        experience_index = experience_mapping.get(result[1], -1)
-        education_index = education_mapping.get(result[2], -1)
-        matrix_job[i] = [city_index, experience_index, education_index]
-        salary = result[-1]
+    # 使用 map 函数进行映射
+    df_job['city_index'] = df_job['city'].map(city_mapping).fillna(-1)
+    df_job['experience_index'] = df_job['experience'].map(experience_mapping).fillna(-1)
+    df_job['education_index'] = df_job['education'].map(education_mapping).fillna(-1)
 
-    for i, result in enumerate(results_title):
-        city_index = city_mapping.get(result[0], -1)
-        experience_index = experience_mapping.get(result[1], -1)
-        education_index = education_mapping.get(result[2], -1)
-        matrix_title[i] = [city_index, experience_index, education_index]
+    df_title['city_index'] = df_title['city'].map(city_mapping).fillna(-1)
+    df_title['experience_index'] = df_title['experience'].map(experience_mapping).fillna(-1)
+    df_title['education_index'] = df_title['education'].map(education_mapping).fillna(-1)
 
+    # 将结果存储为 NumPy 数组
+    matrix_job = df_job[['city_index', 'experience_index', 'education_index']].to_numpy()
+    matrix_title = df_title[['city_index', 'experience_index', 'education_index']].to_numpy()
+
+    scaler = StandardScaler()
+    matrix_job_standard = scaler.fit_transform(matrix_job)
+    matrix_title_standard = scaler.transform(matrix_title)
+
+    job_score = np.dot(matrix_job_standard, matrix_title_standard.T)[0]
+    sorted_indices = np.argsort(job_score)
     matrix_title = np.mean(matrix_title, axis=0)
-    print(matrix_title)
+    top_3_indices = sorted_indices[-4:][::-1]
+    top_jobs = [job_titles[top_3_indices[1]], job_titles[top_3_indices[2]], job_titles[top_3_indices[3]]]
 
-    return jsonify({'matrix_job': matrix_job.tolist(),
-                    'matrix_title': matrix_title.tolist(),
-                    'salary': salary})
+
+    return jsonify({
+        'matrix_job': matrix_job.tolist(),
+        'matrix_title': matrix_title.tolist(),
+        'max_salary': int(max_salary),
+        'min_salary': int(min_salary),
+        'city_name': city_name[:10],
+        'city_times': city_times[:10],
+        'top_jobs': top_jobs,
+    })
 
 
 """
