@@ -201,8 +201,8 @@ def handle_job_parallel():
     company_dict = {comp: index / len(company) for index, comp in enumerate(company)}
 
     # 将数据转换为NumPy数组
-    data_array = np.zeros((len(data), 6))  # 初始化一个数组来保存数据
-    print(data)
+    data_array = np.zeros((len(data), 5))  # 初始化一个数组来保存数据
+    job_titles_list = []
     for i, row in enumerate(data):
         job_title = row[0]
         city = row[1]
@@ -211,41 +211,21 @@ def handle_job_parallel():
         company = row[4]
         avg_monthly_salary = row[5]
 
-        # 将每一列转换为索引位置/列的长度
-        job_title_index = job_titles_dict.get(job_title, -1)
         city_index = cities_dict.get(city, -1)
         experience_index = experience_dict.get(experience, -1)
         education_index = education_dict.get(education, -1)
         company_index = company_dict.get(company, -1)
 
-        data_array[i] = [job_title_index,
-                         city_index,
+        job_titles_list.append(job_title)
+        data_array[i] = [city_index,
                          experience_index,
                          education_index,
                          company_index,
                          avg_monthly_salary]
 
     # 返回结果
-    return jsonify(data_array.tolist())
-
-
-"""
-职业平行图查询对应曲线
-"""
-
-
-@app.route('/job_parallel_line', methods=['POST'])
-def getJobTitle():
-    data = request.json
-    jobTitle = data.get('jobTitle')
-    if jobTitle == '':
-        return "null"
-    job_titles = np.load('../data/job_titles.npy')[::-1]
-    for index, title in enumerate(job_titles):
-        if title == jobTitle:
-            return index / len(job_titles)
-    return "FALSE"
-
+    print(data_array.tolist())
+    return jsonify({"data": data_array.tolist(), "job": job_titles_list})
 
 if __name__ == '__main__':
     app.run(debug=True)
