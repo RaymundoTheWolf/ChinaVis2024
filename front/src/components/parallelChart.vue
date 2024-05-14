@@ -35,7 +35,7 @@
     },
     methods: {
       getData() {
-        console.log("开始发送");
+        console.log("开始");
         if(this.companyType == '') {
           this.companyType = 'type_aAuygy';
         }
