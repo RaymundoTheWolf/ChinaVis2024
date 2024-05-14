@@ -1,16 +1,20 @@
 <template>
-  <div ref="title" class="title-chart">
+  <div>
+    <div ref="title" class="title-chart"></div>
+    <div class="click-info">{{ clickedFieldName }}</div>
   </div>
 </template>
 
 <script>
 import * as echarts from 'echarts';
 import axios from 'axios';
+import { EventBus } from './eventBus.js';
 
 export default {
   data() {
     return {
-      sunburstData: null
+      sunburstData: null,
+      clickedFieldName: ''
     }
   },
   mounted() {
@@ -37,7 +41,7 @@ export default {
       const sortedCounts = field_type_copy.sort((a, b) => field_count_dict[b] - field_count_dict[a]);
       
       // Filter to only top 30 fields
-      const topFields = sortedCounts.slice(0, 30);
+      const topFields = sortedCounts.slice(0, 50);
 
       // Calculate salary quantiles
       const quantiles = [
@@ -49,11 +53,11 @@ export default {
 
       // Define salary ranges
       const salaryRanges = [
-        { name: 'Low Salary', min: 0, max: quantiles[0] },
-        { name: 'Moderate Salary', min: quantiles[0], max: quantiles[1] },
-        { name: 'Average Salary', min: quantiles[1], max: quantiles[2] },
-        { name: 'High Salary', min: quantiles[2], max: quantiles[3] },
-        { name: 'Very High Salary', min: quantiles[3], max: Infinity }
+        { name: '低: 0 ~'+quantiles[0], min: 0, max: quantiles[0] },
+        { name: '较低: '+quantiles[0]+'~'+quantiles[1], min: quantiles[0], max: quantiles[1] },
+        { name: '中等: '+quantiles[1]+`~`+quantiles[2], min: quantiles[1], max: quantiles[2] },
+        { name: '较高: '+quantiles[2]+'~'+quantiles[3], min: quantiles[2], max: quantiles[3] },
+        { name: '高'+quantiles[3]+'~'+19766.667, min: quantiles[3], max: Infinity }
       ];
 
       // Store fields in corresponding salary ranges
@@ -131,6 +135,7 @@ export default {
 
       chart.on('click', params => {
         if (params.data && params.data.real_name) {
+          this.clickedFieldName = "当前显示"+params.data.real_name.replace(/^type_/, ''); // 更新显示框内容
           const fieldName = params.data.real_name;
           sessionStorage.setItem('lastFieldName', fieldName);
           axios.post('http://127.0.0.1:5000/field_click', { field: fieldName })
@@ -142,9 +147,29 @@ export default {
               console.error('Error sending field click data:', error);
             });
         }
+        EventBus.$emit('value-updated', params.data.real_name);
       });
     }
   }
 }
 </script>
+
+<style>
+.title-chart {
+  width: 100%;
+  height: 1000px;
+  position: relative; /* 确保旭日图容器有正确的位置 */
+}
+.click-info {
+  position: absolute;
+  top: 10px;
+  left: 500px;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: 150px;
+  height: 10px;
+}
+</style>
 
