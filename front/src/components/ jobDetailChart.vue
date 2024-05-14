@@ -19,7 +19,7 @@
       <div class="final-container">
         <div class="details-container">
           <div class='pie-chart' ref="pieChart" style="width: 180%; height: 100%;"></div>
-          <div class='bar-chart' ref="barChart" style="width: 420%; height: 150px;"></div>
+          <div class='bar-chart' ref="barChart" style="width: 421%; height: 150px;"></div>
         </div>
         <div class="top-jobs-container">
           <div
