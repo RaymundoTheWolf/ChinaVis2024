@@ -13,13 +13,13 @@
     </div>
     <div class="content-container">
       <div class="charts-container">
-        <percentageChart ref="percentageChart" style="width: 300px; height: 300px;"/>
-        <div ref="radarChart" style="width: 300px; height: 400px;"></div>
+        <percentageChart ref="percentageChart" style="width: 100px; height: 200px;"/>
+        <div class='radar' ref="radarChart" style="width: 200px; height: 300px;"></div>
       </div>
       <div class="final-container">
         <div class="details-container">
-          <div class='pie-chart' ref="pieChart" style="width: 400px; height: 300px;"></div>
-          <div class='bar-chart' ref="barChart" style="width: 700px; height: 300px;"></div>
+          <div class='pie-chart' ref="pieChart" style="width: 400px; height: 150px;"></div>
+          <div class='bar-chart' ref="barChart" style="width: 420px; height: 150px;"></div>
         </div>
         <div class="top-jobs-container">
           <div
@@ -221,7 +221,7 @@ export default {
   margin: 0 auto; /* 水平居中 */
   position: absolute;
   left: 50%;
-  margin-top: 100px;
+  margin-top: 20px;
   transform: translateX(-50%);
 }
 
@@ -235,7 +235,7 @@ export default {
 
 .content-container {
   display: flex;
-  margin-left: 200px; /* 左边距 */
+  margin-left: 10px; /* 左边距 */
   justify-content: space-between;
 }
 
@@ -247,17 +247,17 @@ export default {
   left: 0;
   margin-left: 20px; /* 左边距 */
   margin-right: -40px; 
-  margin-top: 250px;
+  margin-top: 80px;
 }
 
 .details-container {
   display: flex;
   left: 0;
-  margin-top: 200px;
+  margin-top: 70px;
 }
 
 .bar-chart{
-  margin-left: 10px
+  margin-left: -100px
 }
 
 .final-container {
@@ -265,14 +265,19 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start; /* 将内容从容器顶部开始排列 */
+  margin-left: -200px
 }
 
 .job-name {
-  font-size: 50px;
+  font-size: 20px;
   font-weight: bold;
   font-family: 'cursive'; /* 设置花字字体 */
   color: #9894a7;
-  margin-top: 50px;
+  margin-top: 30px;
+}
+
+.radar {
+  margin-top: -100px;
 }
 </style>
 
