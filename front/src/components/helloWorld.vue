@@ -21,7 +21,7 @@
             <!-- 学历3D图 -->
           <div class="fir_box3">
             <dv-border-box-12 style="padding-top: 10px">
-              <h1>学历3D图</h1>
+                <scatterChart/>
             </dv-border-box-12>
           </div>
       </div>
@@ -70,11 +70,13 @@
 import topHeader from "./topHeader.vue";
 import parallelChart from "./parallelChart.vue";
 import JobDetailChart from "./ jobDetailChart.vue";
+import scatterChart from "./scatterChart.vue"
 export default {
   components: {
     topHeader,
     parallelChart,
-    JobDetailChart
+    JobDetailChart,
+    scatterChart
 },
   data () {
     return {}
