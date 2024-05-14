@@ -70,22 +70,34 @@ export default {
         }
       });
 
-      const colorBar = ['#B08D61', '#A4917D', '#8F7D5F', '#C4A985', '#725F4D']
-
+      const baseColors = ['#4CAF50', '#FFEB3B', '#007BFF', '#006400', '#FF0000'];
+      
+      const topFields1 = topFields.map(field => field.replace(/^type_/, ''));  
 
       // Build sunburst data
-      const data = salaryRanges.map((range, i) => ({
-        name: range.name,
-        color:colorBar[i],
-        children: salaryGroups[i].map(field => ({
-          real_name: field,
-          name: topFields.includes(field) ? field : null, // Only show names for top 50 values
-          value: field_count_dict[field] || 0,
-          itemStyle: {
-            color: echarts.color.modifyHSL(colorBar[i], Math.round(field_avg_salary_dict[field]) * 100)
-          }
-        }))
-      }));
+      const data = salaryRanges.map((range, i) => ({  
+          name: range.name,  
+          color: baseColors[i], // Set the base color for the current range  
+          children: salaryGroups[i].map(field => {  
+            // Remove 'type_' prefix from the field name  
+            const fieldNameWithoutPrefix = field.replace(/^type_/, '');  
+              
+            // Adjust the brightness based on salary, but scale it down to avoid extreme values  
+            const brightnessAdjustment = 0.5 * (2 * (field_avg_salary_dict[field] - 5179.2963) / (19766.667 - 5179.2963)) - 0.5; // Your brightness adjustment logic  
+            const adjustedBrightness = Math.max(0, Math.min(1, 0.5 + brightnessAdjustment)); // Your adjusted brightness calculation  
+          
+            return {  
+              real_name: field, // Keep the original field name for other purposes  
+              name: topFields1.includes(fieldNameWithoutPrefix) ? fieldNameWithoutPrefix : null, // Use the field name without prefix for display  
+              value: field_count_dict[field] || 0,  
+              itemStyle: {  
+                color: echarts.color.modifyHSL(baseColors[i], null, adjustedBrightness)  
+              }  
+            };  
+          })  
+        })); 
+
+
 
       // Build series data
       const seriesData = [{
@@ -105,7 +117,8 @@ export default {
         tooltip: {
           formatter: function (params) {
             if (params.data && params.data.real_name) {
-              return 'Field Type: ' + params.data.real_name;
+              let name = params.data.real_name.replace(/^type_/, '');
+              return name;
             }
           },
           trigger: 'item' // 触发类型设置为'item'，使得可以在鼠标悬停时触发
@@ -119,6 +132,7 @@ export default {
       chart.on('click', params => {
         if (params.data && params.data.real_name) {
           const fieldName = params.data.real_name;
+          sessionStorage.setItem('lastFieldName', fieldName);
           axios.post('http://127.0.0.1:5000/field_click', { field: fieldName })
             .then(response => {
               console.log('Field clicked:', fieldName);

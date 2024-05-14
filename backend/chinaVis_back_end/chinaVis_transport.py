@@ -71,20 +71,35 @@ def handle_filed_click():
 """
 
 
-@app.route('/check_box', methods=['GET'])
+@app.route('/check_box', methods=['POST'])
 def send_checkbox_data():
-    job_titles = np.load('../data/job_titles.npy')
-    check_box_data = {
-        'job_titles': job_titles.tolist()[:100]
-    }
-    return jsonify(check_box_data)
+    data = request.json
+    type_name = data.get('typeName')
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        port="3306",
+        password="a21340201152044",
+        database="JobWanted"
+    )
+    query = f"SELECT job_title FROM rec_inf WHERE company_type = '{type_name}'"
+    cursor = conn.cursor()
+    cursor.execute(query)
+
+    results = cursor.fetchall()
+    results = [item[0] for item in results]
+
+    # 关闭数据库连接
+    cursor.close()
+    conn.close()
+    return jsonify(results)
 
 
 @app.route('/job_title_comparison', methods=['POST'])
 def handle_job_title_comparison():
     data = request.json
-    job_title1 = data.get('jobTitle1', 'e0dd920456695914fed9481503e83b41xW')
-    job_title2 = data.get('jobTitle2', '509fc26050f1433dd9baf56cfe91c111vF')
+    job_title = data.get('jobTitle', 'e0dd920456695914fed9481503e83b41xW')
+    type_name = data.get('typeName')
 
     # 连接数据库
     conn = mysql.connector.connect(
@@ -96,23 +111,14 @@ def handle_job_title_comparison():
     )
     cursor = conn.cursor()
 
-    # 查询公司类型
-    query_company_type = "SELECT company_type FROM rec_inf WHERE job_title = %s LIMIT 1"
-    cursor.execute(query_company_type, (job_title1,))
-    company_type1 = cursor.fetchone()[0]
-
-    query_company_type = "SELECT company_type FROM rec_inf WHERE job_title = %s LIMIT 1"
-    cursor.execute(query_company_type, (job_title2,))
-    company_type2 = cursor.fetchone()[0]
-
     # 查询城市、工作经验、教育程度和公司
-    query = f"SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = '{company_type1}'"
+    query = f"SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE job_title = '{job_title}'"
     cursor.execute(query)
-    results_job1 = cursor.fetchall()
+    results_job = cursor.fetchall()
 
-    query = f"SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = '{company_type2}'"
+    query = f"SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = '{type_name}'"
     cursor.execute(query)
-    results_job2 = cursor.fetchall()
+    results_title = cursor.fetchall()
 
     # 关闭数据库连接
     cursor.close()
@@ -120,46 +126,37 @@ def handle_job_title_comparison():
 
     # 将查询结果转换为 NumPy 矩阵
     # 创建空的 NumPy 数组来保存索引值和平均月薪
-    matrix_job1 = np.empty((len(results_job1), 5))
-    matrix_job2 = np.empty((len(results_job2), 5))
+    matrix_job = np.empty((len(results_job), 3))
+    matrix_title = np.empty((len(results_title), 3))
 
     cities = np.load('../data/cities.npy')[::-1]
-    company = np.load('../data/company.npy')[::-1]
     experience = np.load('../data/experience.npy')[::-1]
     education = np.load('../data/education.npy')[::-1]
 
     city_mapping = {city: index / len(cities) for index, city in enumerate(cities)}
     experience_mapping = {exp: index / len(experience) for index, exp in enumerate(experience)}
     education_mapping = {edu: index / len(education) for index, edu in enumerate(education)}
-    company_mapping = {comp: index / len(company) for index, comp in enumerate(company)}
 
     # 将查询结果转换为索引值并填充到 NumPy 数组中
-    for i, result in enumerate(results_job1):
+    for i, result in enumerate(results_job):
         city_index = city_mapping.get(result[0], -1)
         experience_index = experience_mapping.get(result[1], -1)
         education_index = education_mapping.get(result[2], -1)
-        company_index = company_mapping.get(result[3], -1)
-        avg_salary = result[4]
-        matrix_job1[i] = [city_index, experience_index, education_index, company_index, avg_salary]
+        matrix_job[i] = [city_index, experience_index, education_index]
+        salary = result[-1]
 
-    for i, result in enumerate(results_job2):
+    for i, result in enumerate(results_title):
         city_index = city_mapping.get(result[0], -1)
         experience_index = experience_mapping.get(result[1], -1)
         education_index = education_mapping.get(result[2], -1)
-        company_index = company_mapping.get(result[3], -1)
-        avg_salary = result[4]
-        matrix_job2[i] = [city_index, experience_index, education_index, company_index, avg_salary]
+        matrix_title[i] = [city_index, experience_index, education_index]
 
-    # 返回结果
-    ans1 = []
-    ans2 = []
-    correlations_job1 = np.corrcoef(matrix_job1[:, :4], matrix_job1[:, -1], rowvar=False)
-    for i in range(len(correlations_job1)):
-        ans1.append(correlations_job1[i][-1])
-    correlations_job2 = np.corrcoef(matrix_job2[:, :4], matrix_job2[:, -1], rowvar=False)
-    for i in range(len(correlations_job2)):
-        ans2.append(correlations_job2[i][-1])
-    return jsonify({'correlations_job1': ans1[:4], 'correlations_job2': ans2[:4]})
+    matrix_title = np.mean(matrix_title, axis=0)
+    print(matrix_title)
+
+    return jsonify({'matrix_job': matrix_job.tolist(),
+                    'matrix_title': matrix_title.tolist(),
+                    'salary': salary})
 
 
 """
