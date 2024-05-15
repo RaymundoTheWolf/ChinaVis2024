@@ -31,12 +31,15 @@
             <div class="sec_box1">
               <dv-border-box-12>
                 <h1>地区大图</h1>
+                <MapChart/>
               </dv-border-box-12>
             </div>
             <!-- 行业大图 -->
             <div class="sec_box2">
               <dv-border-box-12 style="padding-top: 10px">
                 <h1>行业大图</h1>
+                <TitleChart/>
+                <salaryCountComponent/>
               </dv-border-box-12>
             </div>
       </div>
@@ -70,13 +73,19 @@
 import topHeader from "./topHeader.vue";
 import parallelChart from "./parallelChart.vue";
 import JobDetailChart from "./ jobDetailChart.vue";
-import scatterChart from "./scatterChart.vue"
+import scatterChart from "./scatterChart.vue";
+import MapChart from "./mapChart.vue";
+import TitleChart from "./titleChart.vue";
+import salaryCountComponent from "./salaryCount.vue";
 export default {
   components: {
     topHeader,
     parallelChart,
     JobDetailChart,
-    scatterChart
+    scatterChart,
+    MapChart,
+    TitleChart,
+    salaryCountComponent
 },
   data () {
     return {}

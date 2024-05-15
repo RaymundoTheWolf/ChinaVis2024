@@ -99,7 +99,7 @@
                 return 'yellow';  
                 }  
                 // 否则，返回初始颜色（例如：蓝色）  
-                return 'blue';  
+                return '#87CEFA';  
                 }.bind(this) // 绑定当前Vue实例的this上下文  
             },    
             },  

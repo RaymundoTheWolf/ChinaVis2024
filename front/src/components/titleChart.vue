@@ -135,7 +135,7 @@ export default {
 
       chart.on('click', params => {
         if (params.data && params.data.real_name) {
-          this.clickedFieldName = "当前显示区域："+params.data.real_name.replace(/^type_/, ''); // 更新显示框内容
+          this.clickedFieldName = "当前显示行业："+params.data.real_name.replace(/^type_/, ''); // 更新显示框内容
           const fieldName = params.data.real_name;
           sessionStorage.setItem('lastFieldName', fieldName);
           axios.post('http://127.0.0.1:5000/field_click', { field: fieldName })
