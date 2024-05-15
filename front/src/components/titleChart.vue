@@ -9,7 +9,7 @@
 import * as echarts from 'echarts';
 import axios from 'axios';
 import { EventBus } from './eventBus.js';
-
+import { freshData } from './parallelChart.vue';
 export default {
   data() {
     return {
@@ -138,6 +138,7 @@ export default {
           this.clickedFieldName = "当前显示行业："+params.data.real_name.replace(/^type_/, ''); // 更新显示框内容
           const fieldName = params.data.real_name;
           sessionStorage.setItem('lastFieldName', fieldName);
+          EventBus.$emit('fresh-data', fieldName);
           axios.post('http://127.0.0.1:5000/field_click', { field: fieldName })
             .then(response => {
               console.log('Field clicked:', fieldName);

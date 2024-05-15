@@ -15,9 +15,12 @@
   import axios from 'axios';  
   import * as echarts from 'echarts';
   import { Notification } from 'element-ui'; 
-  
+  import { EventBus } from './eventBus';
   
   export default {
+    created(){
+      EventBus.$on('fresh-data', this.freshData);
+    },
     data() {
       return {
         companyType: "",
@@ -36,9 +39,11 @@
     methods: {
       getData() {
         console.log("开始");
+        this.companyType = sessionStorage.getItem('lastFieldName');
         if(this.companyType == '') {
           this.companyType = 'type_aAuygy';
         }
+        
         axios.post('http://127.0.0.1:5000/job_parallel_all',{
             companyType : this.companyType 
             })
@@ -155,8 +160,32 @@
         };
         this.chart.setOption(this.option)
       },
+      //根据行业刷新图
+      freshData(new_type){
+        console.log("已获取行业")
+        axios.post('http://127.0.0.1:5000/job_parallel_all',{
+                companyType : new_type
+                })
+                .then(response => {
+                    this.paralleldata = response.data.data;
+                    this.allJobTitle = response.data.job;
+                    console.log(this.paralleldata);
+                    console.log(this.allJobTitle);
+                })
+                .catch(error => {
+                    console.error('Error sending job parallel data:', error);
+                });
+        this.paralleldataShift = this.paralleldata;
+        this.option.series.data = this.paralleldataShift;
+        this.chart.setOption(this.option);
+        this.shiftSwitch = false;
+      }
+    },
+    beforeDestroy(){
+      EventBus.$off('fresh-data', this.freshData);
     }
   }
+  
   </script>
   
   <style>
