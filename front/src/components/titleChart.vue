@@ -53,11 +53,11 @@ export default {
 
       // Define salary ranges
       const salaryRanges = [
-        { name: '低: 0 ~'+quantiles[0], min: 0, max: quantiles[0] },
-        { name: '较低: '+quantiles[0]+'~'+quantiles[1], min: quantiles[0], max: quantiles[1] },
-        { name: '中等: '+quantiles[1]+`~`+quantiles[2], min: quantiles[1], max: quantiles[2] },
-        { name: '较高: '+quantiles[2]+'~'+quantiles[3], min: quantiles[2], max: quantiles[3] },
-        { name: '高'+quantiles[3]+'~'+19766.667, min: quantiles[3], max: Infinity }
+        { name: '低收入', min: 0, max: quantiles[0] },
+        { name: '较低收入', min: quantiles[0], max: quantiles[1] },
+        { name: '中等收入', min: quantiles[1], max: quantiles[2] },
+        { name: '较高收入', min: quantiles[2], max: quantiles[3] },
+        { name: '高收入', min: quantiles[3], max: Infinity }
       ];
 
       // Store fields in corresponding salary ranges
@@ -135,7 +135,7 @@ export default {
 
       chart.on('click', params => {
         if (params.data && params.data.real_name) {
-          this.clickedFieldName = "当前显示"+params.data.real_name.replace(/^type_/, ''); // 更新显示框内容
+          this.clickedFieldName = "当前显示区域："+params.data.real_name.replace(/^type_/, ''); // 更新显示框内容
           const fieldName = params.data.real_name;
           sessionStorage.setItem('lastFieldName', fieldName);
           axios.post('http://127.0.0.1:5000/field_click', { field: fieldName })
@@ -156,9 +156,11 @@ export default {
 
 <style>
 .title-chart {
-  width: 100%;
-  height: 1000px;
+  width: 50%;
+  height: 600px;
   position: relative; /* 确保旭日图容器有正确的位置 */
+  left: 600px;
+  margin-top: -40px;
 }
 .click-info {
   position: absolute;
@@ -168,8 +170,10 @@ export default {
   padding: 5px;
   border-radius: 5px;
   z-index: 1000;
-  width: 150px;
-  height: 10px;
+  width: 200px;
+  height: 30px;
+  color: black; 
+  pointer-events: none; /* 可选：确保这个元素不响应鼠标事件 */
 }
 </style>
 

@@ -1,14 +1,18 @@
-<template>  
-  <div>  
-    <!-- 创建一个容器来放置图表和按钮 -->  
-    <div style="position: relative; width: 1100px;"> <!-- 增加宽度以容纳按钮 -->
-      <div ref="chart" style="width: 1000px; height: 800px;"></div>
-      <div ref="lineChart" style="width: 1000px; height: 400px; margin-top: -100px;"></div> <!-- 新增折线图容器 -->
-      <!-- 添加一个按钮 -->  
-      <el-button id="backbutton" class="renderbutton" @click="backToPreviousMap" style="position: absolute; right: 0; top: 400px;">返回上一级</el-button>
-    </div>
-  </div>
-</template>   
+<template>    
+  <div>    
+    <!-- 创建一个容器来放置图表和按钮 -->    
+    <div style="display: flex; justify-content: space-between;">  
+      <!-- 地图容器 -->  
+      <div style="width: 800px;">  
+        <div ref="chart" style="width: 100%; height: 500px;"></div>  
+        <!-- 添加一个按钮，位于地图正下方 -->  
+        <el-button id="backbutton" class="renderbutton" @click="backToPreviousMap" style="margin-top: 5px; margin-left: 300px;">返回上一级</el-button>  
+      </div>  
+      <!-- 折线图容器，位于地图右侧 -->  
+      <div ref="lineChart" style="width: 600px; height: 500px;"></div>  
+    </div>  
+  </div>  
+</template>    
   
 <script>  
 import axios from 'axios';  
@@ -181,6 +185,7 @@ export default {
       }
       // 配置项
       const option = {
+        backgroundColor: 'transparent', // 设置背景颜色为透明
         series: [
           {
             type: 'treemap',
@@ -226,6 +231,7 @@ export default {
     drawSubMap(data, isUserInteraction = false) {  
       // 配置项  
       const option = {  
+        backgroundColor: 'transparent', // 设置背景颜色为透明
         series: [
           {
             type: 'treemap',
