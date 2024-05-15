@@ -1,5 +1,5 @@
 <template>  
-    <div ref="chartContainer" style="width: 1000px; height: 1000px;"></div>  
+    <div ref="chartContainer" style="width: 600px; height: 600px; margin-top: -600px; margin-left: 0px;;"></div>  
   </template>  
     
   <script>  
@@ -43,7 +43,7 @@
         }  
     
         // 定义图表配置  
-        const option = {   
+        const option = {
           xAxis: {  
             name: '岗位数量',  
             type: 'value',
@@ -52,7 +52,15 @@
             axisTick:{
                 show: false,
             },
-            splitLine: { show: false }
+            splitLine: { show: false },
+            axisLine: {  
+              lineStyle: {  
+                color: 'white' // 设置轴线颜色为白色  
+              }  
+            },  
+            axisLabel: {  
+              color: 'white' // 如果需要，设置标签颜色为白色  
+            }  
           },  
           yAxis: {  
             name: '薪资水平',  
@@ -62,7 +70,15 @@
             },
             min: -10000, // 设置Y轴最小值  
             max: 13000,
-            splitLine: { show: false }
+            splitLine: { show: false },
+            axisLine: {  
+            lineStyle: {  
+              color: 'white' // 设置轴线颜色为白色  
+              }  
+           },  
+          axisLabel: {  
+            color: 'white' // 如果需要，设置标签颜色为白色  
+          }  
           },
           // 添加名称显示到tooltip中  
           tooltip: { 
@@ -83,7 +99,7 @@
                 return 'yellow';  
                 }  
                 // 否则，返回初始颜色（例如：蓝色）  
-                return 'blue';  
+                return '#87CEFA';  
                 }.bind(this) // 绑定当前Vue实例的this上下文  
             },    
             },  

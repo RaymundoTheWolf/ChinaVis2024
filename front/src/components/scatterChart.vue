@@ -64,12 +64,12 @@
 			}
 		  },
 		  visualMap: {
-			type: 'continuous', // 连续型
-			dimension: 3, // 对工资这一维度进行映射
-			min: minSalary, // 工资的最小值
-			max: maxSalary, // 工资的最大值
+			calculable: true,
+			dimension: 3,
+			max: maxSalary,
 			inRange: {
-			  color: ['#FF0000', '#00FF00', '#0000FF'] // 低工资为红色，中工资为绿色，高工资为蓝色
+			  symbolSize: [minSymbolSize, maxSymbolSize],
+			  color:['#ff5c41', '#44ff40', '#00a6ff']
 			},
 			textStyle: {
 			  color: '#fff'

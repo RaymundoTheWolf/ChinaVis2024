@@ -18,8 +18,8 @@
       </div>
       <div class="final-container">
         <div class="details-container">
-          <div class='pie-chart' ref="pieChart" style="width: 400px; height: 150px;"></div>
-          <div class='bar-chart' ref="barChart" style="width: 420px; height: 150px;"></div>
+          <div class='pie-chart' ref="pieChart" style="width: 150px; height: 150px;"></div>
+          <div class='bar-chart' ref="barChart" style="width: 450px; height: 150px;"></div>
         </div>
         <div class="top-jobs-container">
           <div
@@ -237,35 +237,37 @@ export default {
   display: flex;
   margin-left: 10px; /* 左边距 */
   justify-content: space-between;
+  left: 0
 }
 
 .charts-container {
+  width: 30%;
+  flex-grow: 2; /* 让其占据可用空间 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start; /* 将内容从容器顶部开始排列 */
   left: 0;
-  margin-left: 20px; /* 左边距 */
-  margin-right: -40px; 
-  margin-top: 80px;
+  margin-top: 100px;
+  margin-right: 0px;
 }
 
 .details-container {
   display: flex;
   left: 0;
-  margin-top: 70px;
 }
 
-.bar-chart{
-  margin-left: -100px
-}
+
 
 .final-container {
+  width: 70%;
+  flex-grow: 1; /* 让其占据可用空间 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start; /* 将内容从容器顶部开始排列 */
-  margin-left: -200px
+  margin-top: 100px;
+  margin-left: 0px;
 }
 
 .job-name {
@@ -273,7 +275,7 @@ export default {
   font-weight: bold;
   font-family: 'cursive'; /* 设置花字字体 */
   color: #9894a7;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .radar {
