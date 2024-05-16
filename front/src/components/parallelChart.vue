@@ -19,7 +19,9 @@
   
   export default {
     created(){
-      EventBus.$on('fresh-data', this.freshData);
+      EventBus.$on('fresh-data', (newValue) => {
+        this.freshData(newValue)
+      });
     },
     data() {
       return {
@@ -38,8 +40,6 @@
     },
     methods: {
       getData() {
-        console.log("开始");
-        this.companyType = sessionStorage.getItem('lastFieldName');
         if(this.companyType == '') {
           this.companyType = 'type_aAuygy';
         }
@@ -74,8 +74,8 @@
             if(this.shiftSwitch){
             this.paralleldataShift[newindex].lineStyle = {
               //color: '#ffcc00'
-              width: '10',
-              opacity: '1',
+              width: '2',
+              opacity: '0.4',
             }
             }
             else{
@@ -84,8 +84,8 @@
                   value: item,
                   lineStyle: {
                     //color: (index == newindex) ? '#ffcc00' : '#ccc',
-                    width: (index == newindex) ? '10' : '1',
-                    opacity: (index == newindex) ? '1' : '0.05'
+                    width: (index == newindex) ? '2' : '1',
+                    opacity: (index == newindex) ? '0.4' : '0.008'
                   }
                 };
               })
@@ -108,7 +108,7 @@
       initChart() {
         this.chart = echarts.init(this.$refs.chart);
         this.option = {
-            backgroundColor: '#22272e',
+            backgroundColor: 'transparent',
             parallelAxis : [
             {dim: 0, name: '地区'},
             {dim: 1, name: '工作经验'},
@@ -121,8 +121,7 @@
               max: 1,
               dimension: 2,
               inRange: {
-                color: ['#F38181', '#FCE38A', '#EAFFD0', '#95E1D3'].reverse(),
-                //colorAlpha: [0, 1]
+                color: ['#EA907A', '#2E72AF', '#98ff93', '#ffcb60'].reverse(),
               }
             },
             parallel: {
