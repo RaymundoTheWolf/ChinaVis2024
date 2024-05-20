@@ -56,7 +56,7 @@ def process_data(field):
 
         city_index = cities_dict.get(city, -1)
         experience_index = experience_dict.get(experience, -1)
-        education_index = education_dict.get(education, -1)
+        education_index = education_dict.get(education, 0)
 
         data_array[i] = [job_title,
                          city_index * 0.24,
@@ -84,7 +84,5 @@ def Jsonfy(field):
     job_avg_salary = [record[5] for record in res]
 
     # 创建该职业字典 职位:工资,公司,三维指标(地区，经验，学历)
-    job_dict = {record[0]: [record[5], record[4], [record[1],record[2],record[3]]] for record in res}
-    with open('../data/scatterDate/job_dict.json', 'w') as f:
-        json.dump(job_dict, f)
+    job_dict = {record[0]: [record[5], record[4], [record[1], record[2], record[3]]] for record in res}
     return job_dict
