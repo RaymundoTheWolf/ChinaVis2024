@@ -285,5 +285,6 @@ def handle_job_parallel():
     return jsonify({"data": data_array.tolist(), "job": job_titles_list})
 
 
+
 if __name__ == '__main__':
     app.run(debug=True)

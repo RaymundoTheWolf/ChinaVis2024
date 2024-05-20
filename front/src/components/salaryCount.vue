@@ -94,7 +94,7 @@
               symbolSize: 10,  
               data: dataPoints, // 使用准备好的数据点
               itemStyle: {  
-            color: function(params) {  
+              color: function(params) {  
                 // 如果数据点的名称与lastFieldName相匹配，则颜色为黄色  
                 if (params.name === this.lastFieldName) {  
                 return 'yellow';  

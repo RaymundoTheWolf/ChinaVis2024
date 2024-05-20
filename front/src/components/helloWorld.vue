@@ -10,6 +10,8 @@
             <div class="fir_box1">
               <dv-border-box-12 style="padding-top: 10px">
                 <h1>发展动态</h1>
+                <count/>
+                <barChartComponent/>
               </dv-border-box-12>
             </div>
             <!-- 地区画像 -->
@@ -30,13 +32,16 @@
             <!-- 地区大图 -->
             <div class="sec_box1">
               <dv-border-box-12>
-                <map-chart/>
+                <h1>地区大图</h1>
+                <MapChart/>
               </dv-border-box-12>
             </div>
             <!-- 行业大图 -->
             <div class="sec_box2">
               <dv-border-box-12 style="padding-top: 10px">
-                <title-chart/>
+                <h1>行业大图</h1>
+                <TitleChart/>
+                <salaryCountComponent/>
               </dv-border-box-12>
             </div>
       </div>
@@ -51,7 +56,7 @@
             <!-- 职位分析图 -->
             <div class="thr_box2">
               <dv-border-box-12 style="padding-top: 10px">
-                <job-detail-chart/>
+                <JobDetailChart/>
               </dv-border-box-12>
             </div>
             <!-- 平行坐标图 -->
@@ -69,18 +74,24 @@
 <script>
 import topHeader from "./topHeader.vue";
 import parallelChart from "./parallelChart.vue";
+import JobDetailChart from "./ jobDetailChart.vue";
 import scatterChart from "./scatterChart.vue";
-import mapChart from "./mapChart.vue";
-import titleChart from "./titleChart.vue";
-import jobDetailChart from "./ jobDetailChart.vue";
+import MapChart from "./mapChart.vue";
+import TitleChart from "./titleChart.vue";
+import salaryCountComponent from "./salaryCount.vue";
+import count from "./count.vue";
+import barChartComponent from "./barChart.vue";
 export default {
   components: {
     topHeader,
     parallelChart,
+    JobDetailChart,
     scatterChart,
-    mapChart,
-    titleChart,
-    jobDetailChart
+    MapChart,
+    TitleChart,
+    salaryCountComponent,
+    count,
+    barChartComponent
 },
   data () {
     return {}
@@ -186,5 +197,4 @@ a {
   height: 100%;
   width: 30%;
 }
-
 </style>

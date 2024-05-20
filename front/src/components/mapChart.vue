@@ -15,6 +15,7 @@
 <script>  
 import axios from 'axios';  
 import * as echarts from 'echarts';  
+import { EventBus } from './eventBus.js';
   
 export default {  
   data() {  
@@ -22,7 +23,7 @@ export default {
       mapData: null,  
       chartOptionsStack: [], // 用于存储主地图的配置项  
       subChartOptionsStack: [], // 用于存储用户交互产生的子图配置项  
-      currentChart: null // 当前图表的实例  
+      currentChart: null // 当前图表的实例
     };  
   },  
   mounted() {  
@@ -37,6 +38,7 @@ export default {
         // 获取点击的区域名字  
         const clickedCityName = params.name;
         sessionStorage.setItem('lastClickedCity', clickedCityName);
+        EventBus.$emit('value-fresh', clickedCityName); 
         // 过滤出以该区域名字首字母开头的城市的平均工作数量和平均薪资数据  
         const filteredData = {};  
         for (const city in this.mapData.city_count_dict) {  
@@ -56,7 +58,8 @@ export default {
       //如果需要，可以清除localStorage中的lastClickedCity  
       localStorage.removeItem('lastClickedCity'); 
       this.subChartOptionsStack.pop();
-      if (this.subChartOptionsStack.length > 0) {  
+      if (this.subChartOptionsStack.length > 0) {
+
         const prevOption = this.subChartOptionsStack.pop(); // 直接弹出顶部配置项  
         this.currentChart.setOption(prevOption);  
       } else if (this.mainChartOptions) {  
