@@ -45,7 +45,7 @@
             <!-- 未知图 -->
             <div class="thr_box1">
               <dv-border-box-12>
-                <radarChart/>
+                <h1>未知图</h1>
               </dv-border-box-12>
             </div>
             <!-- 职位分析图 -->
@@ -73,7 +73,6 @@ import scatterChart from "./scatterChart.vue";
 import mapChart from "./mapChart.vue";
 import titleChart from "./titleChart.vue";
 import jobDetailChart from "./ jobDetailChart.vue";
-import radarChart from "./radar.vue"
 export default {
   components: {
     topHeader,
@@ -81,8 +80,7 @@ export default {
     scatterChart,
     mapChart,
     titleChart,
-    jobDetailChart,
-    radarChart
+    jobDetailChart
 },
   data () {
     return {}
