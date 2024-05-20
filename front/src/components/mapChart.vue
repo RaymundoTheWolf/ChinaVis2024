@@ -1,17 +1,15 @@
-<template>    
-  <div>    
+<template>  
     <!-- 创建一个容器来放置图表和按钮 -->    
-    <div style="display: flex; justify-content: space-between;">  
+    <div id="map-chart">  
       <!-- 地图容器 -->  
-      <div style="width: 800px;">  
-        <div ref="chart" style="width: 100%; height: 500px;" ></div>  
+      <div class="map">  
+        <div ref="chart" class="chart-map"></div>  
         <!-- 添加一个按钮，位于地图正下方 -->  
-        <el-button id="backbutton" class="renderbutton" @click="backToPreviousMap" style="margin-top: 5px; margin-left: 300px;">返回上一级</el-button>  
+        <el-button class="renderbutton" @click="backToPreviousMap">返回上一级</el-button>  
       </div>  
       <!-- 折线图容器，位于地图右侧 -->  
-      <div ref="lineChart" style="width: 600px; height: 500px;"></div>  
-    </div>  
-  </div>  
+      <div ref="lineChart" class="chart-line"></div>  
+    </div>
 </template>    
   
 <script>  
@@ -281,4 +279,44 @@ export default {
     }  
   }  
 };  
-</script>  
+</script>
+
+<style>
+#map-chart {
+  display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 20px; /* 内边距，可根据需要调整 */
+    box-sizing: border-box; /* 使得padding不会影响整体尺寸 */
+    flex-direction: row;
+}
+
+#map-chart .map {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    flex-direction: column;
+    margin-right: 10px;
+    align-items: center;
+}
+
+#map-chart .chart-map {
+    display: flex;
+    width: 100%;
+    height: 100%;
+
+}
+#map-chart .renderbutton {
+  display: flex;
+  width: 25%;
+  height: 10%;
+
+}
+
+#map-chart .chart-line {
+  display: flex;
+  width: 50%;
+  height: 100%;
+}
+
+</style>

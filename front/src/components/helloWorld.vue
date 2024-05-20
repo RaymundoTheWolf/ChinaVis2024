@@ -30,16 +30,14 @@
             <!-- 地区大图 -->
             <div class="sec_box1">
               <dv-border-box-12>
-                <h1>地区大图</h1>
-                <MapChart/>
+                <map-chart/>
               </dv-border-box-12>
             </div>
             <!-- 行业大图 -->
             <div class="sec_box2">
               <dv-border-box-12 style="padding-top: 10px">
-                <h1>行业大图</h1>
-                <TitleChart/>
-                <salaryCountComponent/>
+                <title-chart/>
+                <salary-count/>
               </dv-border-box-12>
             </div>
       </div>
