@@ -13,13 +13,13 @@
     </div>
     <div class="content-container">
       <div class="charts-container">
-        <percentageChart ref="percentageChart" style="width: 100px; height: 200px;"/>
-        <div class='radar' ref="radarChart" style="width: 200px; height: 300px;"></div>
+        <percentageChart ref="percentageChart" style="width: 300px; height: 300px;"/>
+        <div ref="radarChart" style="width: 300px; height: 400px;"></div>
       </div>
       <div class="final-container">
         <div class="details-container">
-          <div class='pie-chart' ref="pieChart" style="width: 150px; height: 150px;"></div>
-          <div class='bar-chart' ref="barChart" style="width: 450px; height: 150px;"></div>
+          <div class='pie-chart' ref="pieChart" style="width: 400px; height: 300px;"></div>
+          <div class='bar-chart' ref="barChart" style="width: 700px; height: 300px;"></div>
         </div>
         <div class="top-jobs-container">
           <div
@@ -221,7 +221,7 @@ export default {
   margin: 0 auto; /* 水平居中 */
   position: absolute;
   left: 50%;
-  margin-top: 20px;
+  margin-top: 100px;
   transform: translateX(-50%);
 }
 
@@ -235,51 +235,44 @@ export default {
 
 .content-container {
   display: flex;
-  margin-left: 10px; /* 左边距 */
+  margin-left: 200px; /* 左边距 */
   justify-content: space-between;
-  left: 0
 }
 
 .charts-container {
-  width: 30%;
-  flex-grow: 2; /* 让其占据可用空间 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start; /* 将内容从容器顶部开始排列 */
   left: 0;
-  margin-top: 100px;
-  margin-right: 0px;
+  margin-left: 20px; /* 左边距 */
+  margin-right: -40px; 
+  margin-top: 250px;
 }
 
 .details-container {
   display: flex;
   left: 0;
+  margin-top: 200px;
 }
 
-
+.bar-chart{
+  margin-left: 10px
+}
 
 .final-container {
-  width: 70%;
-  flex-grow: 1; /* 让其占据可用空间 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start; /* 将内容从容器顶部开始排列 */
-  margin-top: 100px;
-  margin-left: 0px;
 }
 
 .job-name {
-  font-size: 20px;
+  font-size: 50px;
   font-weight: bold;
   font-family: 'cursive'; /* 设置花字字体 */
   color: #9894a7;
-  margin-top: 15px;
-}
-
-.radar {
-  margin-top: -100px;
+  margin-top: 50px;
 }
 </style>
 

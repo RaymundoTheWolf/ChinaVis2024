@@ -31,7 +31,7 @@
         option: null,//图表参数
         paralleldata: null,//返回的图表数据
         paralleldataShift: null,//筛选后的图表数据
-        allJobTitle: [],//返回数据对应的职位
+        allJobTitle: null,//返回数据对应的职位
         shiftSwitch: false //是否处于筛选状态
       };
     },
@@ -50,8 +50,7 @@
             .then(response => {
                 this.paralleldata = response.data.data;
                 this.allJobTitle = response.data.job;
-                console.log(this.paralleldata);
-                console.log(this.allJobTitle);
+                console.log(this.allJobTitle);//删除
                 this.initChart();
             })
             .catch(error => {
@@ -73,7 +72,6 @@
           else{
             if(this.shiftSwitch){
             this.paralleldataShift[newindex].lineStyle = {
-              //color: '#ffcc00'
               width: '2',
               opacity: '0.4',
             }
@@ -83,7 +81,6 @@
                 return {
                   value: item,
                   lineStyle: {
-                    //color: (index == newindex) ? '#ffcc00' : '#ccc',
                     width: (index == newindex) ? '2' : '1',
                     opacity: (index == newindex) ? '0.4' : '0.008'
                   }
