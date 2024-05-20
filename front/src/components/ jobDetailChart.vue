@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="job-detail-chart">
     <div class="container">
       <el-select v-model="selectedJobTitle" placeholder="请选择或输入职位" clearable filterable remote :remote-method="getCheckBoxData" class="select">
         <el-option
@@ -13,13 +13,13 @@
     </div>
     <div class="content-container">
       <div class="charts-container">
-        <percentageChart ref="percentageChart" style="width: 300px; height: 300px;"/>
-        <div ref="radarChart" style="width: 300px; height: 400px;"></div>
+        <percentageChart ref="percentageChart" class="percentageChart"/>
+        <div ref="radarChart" class="radarChart"></div>
       </div>
       <div class="final-container">
         <div class="details-container">
-          <div class='pie-chart' ref="pieChart" style="width: 400px; height: 300px;"></div>
-          <div class='bar-chart' ref="barChart" style="width: 700px; height: 300px;"></div>
+          <div class='pie-chart' ref="pieChart"></div>
+          <div class='bar-chart' ref="barChart"></div>
         </div>
         <div class="top-jobs-container">
           <div
@@ -213,66 +213,94 @@ export default {
 </script>
 
 <style>
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 800px; /* 设置容器的最大宽度 */
-  margin: 0 auto; /* 水平居中 */
-  position: absolute;
-  left: 50%;
-  margin-top: 100px;
-  transform: translateX(-50%);
-}
-
-.select {
-  width: 60%; /* 设置选择框的宽度 */
-}
-
-.search-button {
-  width: 30%; /* 设置按钮的宽度 */
-}
-
-.content-container {
-  display: flex;
-  margin-left: 200px; /* 左边距 */
-  justify-content: space-between;
-}
-
-.charts-container {
+#job-detail-chart {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* 将内容从容器顶部开始排列 */
-  left: 0;
-  margin-left: 20px; /* 左边距 */
-  margin-right: -40px; 
-  margin-top: 250px;
 }
 
-.details-container {
+
+#job-detail-chart .container {
   display: flex;
-  left: 0;
-  margin-top: 200px;
+  width: 100%;
+  height: 20%;
 }
 
-.bar-chart{
-  margin-left: 10px
+#job-detail-chart .select {
+  width: 40%; /* 设置选择框的宽度 */
+  margin-left: 20%;
 }
 
-.final-container {
+#job-detail-chart .search-button {
+  width: 10%; /* 设置按钮的宽度 */
+  height: 80%;
+  margin-left: 1%;
+}
+
+#job-detail-chart .content-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+#job-detail-chart .percentageChart {
+  width: 100%;
+  height: 60%;
+}
+
+#job-detail-chart .radarChart {
+  width: 100%;
+  height: 40%;
+}
+
+#job-detail-chart .charts-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* 将内容从容器顶部开始排列 */
+  width: 30%;
+  height: 100%
 }
 
-.job-name {
-  font-size: 50px;
+#job-detail-chart .details-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+#job-detail-chart .pie-chart{
+  width: 100%;
+  height: 100%;
+}
+
+#job-detail-chart .bar-chart{
+  margin-left: 10px;
+  width: 100%;
+  height: 100%;
+
+}
+
+#job-detail-chart .top-jobs-container{
+  width: 100%;
+  height: 50%;
+
+}
+
+#job-detail-chart .final-container {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  height: 100%;
+}
+
+#job-detail-chart .job-name {
+  font-size: 10%;
   font-weight: bold;
   font-family: 'cursive'; /* 设置花字字体 */
   color: #9894a7;
-  margin-top: 50px;
+  margin-top: 1%;
+  width: 100%;
+  height: 30%;
+  margin-left: 20%;
 }
 </style>
 

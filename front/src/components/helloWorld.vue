@@ -51,7 +51,7 @@
             <!-- 职位分析图 -->
             <div class="thr_box2">
               <dv-border-box-12 style="padding-top: 10px">
-                <JobDetailChart/>
+                <job-detail-chart/>
               </dv-border-box-12>
             </div>
             <!-- 平行坐标图 -->
@@ -69,18 +69,18 @@
 <script>
 import topHeader from "./topHeader.vue";
 import parallelChart from "./parallelChart.vue";
-import JobDetailChart from "./ jobDetailChart.vue";
 import scatterChart from "./scatterChart.vue";
-import MapChart from "./mapChart.vue";
-import TitleChart from "./titleChart.vue";
+import mapChart from "./mapChart.vue";
+import titleChart from "./titleChart.vue";
+import jobDetailChart from "./ jobDetailChart.vue";
 export default {
   components: {
     topHeader,
     parallelChart,
-    JobDetailChart,
     scatterChart,
-    MapChart,
-    TitleChart,
+    mapChart,
+    titleChart,
+    jobDetailChart
 },
   data () {
     return {}
