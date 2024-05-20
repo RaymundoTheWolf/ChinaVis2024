@@ -215,11 +215,4 @@
   flex-basis: 10%;
   margin-left: 10px; /* 按钮之间留出空间 */
 }
-
-/* 图表容器样式 */
-#parallel-chart div[ref="chart"] {
-  flex-shrink: 1;
-  width: 100%; /* 图表容器宽度为100%，可以占据父容器的全部宽度 */
-  height: auto; /* 图表容器高度，可根据需要调整 */
-}
 </style>

@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <div ref="title" class="title-chart"></div>
-    <div class="click-info">{{ clickedFieldName }}</div>
+  <div id="title-chart">
+    <salary-count/>
+    <div class="display-chart">
+      <div class="click-info">{{ clickedFieldName }}</div>
+      <div ref="title" class="chart"></div>
+    </div>
   </div>
 </template>
 
@@ -10,7 +13,11 @@ import * as echarts from 'echarts';
 import axios from 'axios';
 import { EventBus } from './eventBus.js';
 import { freshData } from './parallelChart.vue';
+import salaryCount from './salaryCount.vue';
 export default {
+  components: {
+    salaryCount
+  },
   data() {
     return {
       sunburstData: null,
@@ -156,23 +163,30 @@ export default {
 </script>
 
 <style>
-.title-chart {
-  width: 50%;
-  height: 600px;
-  position: relative; /* 确保旭日图容器有正确的位置 */
-  left: 600px;
-  margin-top: -40px;
+#title-chart {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
-.click-info {
-  position: absolute;
-  top: 10px;
-  left: 500px;
+#title-chart .display-chart {
+  display: flex;
+  width: 50%;
+  height: 100%;
+  flex-direction: column;
+}
+#title-chart .chart {
+  width: 100%;
+  height: 100%;
+}
+#title-chart .click-info {
+  margin-top: 10px;
+  margin-left: 10%;
   background-color: #f0f0f0;
   padding: 5px;
   border-radius: 5px;
   z-index: 1000;
-  width: 200px;
-  height: 30px;
+  width: 80%;
+  height: 10%;
   color: black; 
   pointer-events: none; /* 可选：确保这个元素不响应鼠标事件 */
 }

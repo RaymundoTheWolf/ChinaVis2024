@@ -1,14 +1,15 @@
 <template>  
-    <div ref="chartContainer" style="width: 600px; height: 600px; margin-top: -600px; margin-left: 0px;;"></div>  
-  </template>  
+  <div id ="salary-count">
+    <div ref="chartContainer" class="chart"></div>
+  </div>  
+</template>  
     
   <script>  
   import * as echarts from 'echarts';  
   import axios from 'axios'; 
   import { EventBus } from './eventBus.js';
     
-  export default {  
-    name: 'salaryCountComponent',  
+  export default { 
     data() {  
       return {  
         fieldData: null, // 用于存储从API获取的数据
@@ -47,7 +48,7 @@
           xAxis: {  
             name: '岗位数量',  
             type: 'value',
-            min: -10000, // 设置X轴最小值  
+            min: -7000, // 设置X轴最小值  
             max: 10000,
             axisTick:{
                 show: false,
@@ -68,7 +69,7 @@
             axisTick:{
                 show: false,
             },
-            min: -10000, // 设置Y轴最小值  
+            min: -15000, // 设置Y轴最小值  
             max: 13000,
             splitLine: { show: false },
             axisLine: {  
@@ -124,3 +125,19 @@
         },  
     };  
   </script>
+
+<style>
+
+#salary-count {
+  display: flex;
+  width: 50%;
+  height: 100%;
+  flex-direction: row;
+}
+#salary-count .chart {
+  width: 100%;
+  height: 100%;
+  margin-left: 5%;
+}
+
+</style>

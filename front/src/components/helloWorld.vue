@@ -37,7 +37,6 @@
             <div class="sec_box2">
               <dv-border-box-12 style="padding-top: 10px">
                 <title-chart/>
-                <salary-count/>
               </dv-border-box-12>
             </div>
       </div>
@@ -74,7 +73,6 @@ import JobDetailChart from "./ jobDetailChart.vue";
 import scatterChart from "./scatterChart.vue";
 import MapChart from "./mapChart.vue";
 import TitleChart from "./titleChart.vue";
-import salaryCountComponent from "./salaryCount.vue";
 export default {
   components: {
     topHeader,
@@ -83,7 +81,6 @@ export default {
     scatterChart,
     MapChart,
     TitleChart,
-    salaryCountComponent
 },
   data () {
     return {}
@@ -189,4 +186,5 @@ a {
   height: 100%;
   width: 30%;
 }
+
 </style>
