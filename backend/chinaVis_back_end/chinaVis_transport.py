@@ -192,18 +192,19 @@ def handle_job_title_comparison():
 
     matrix_job = df_job[['city_index', 'experience_index', 'education_index']].to_numpy()
     matrix_type = df_type[['city_index', 'experience_index', 'education_index']].to_numpy()
+    means = np.mean(matrix_type, axis=0)
+    std_devs = np.std(matrix_type, axis=0)
+    matrix_type = (matrix_type - means) / std_devs
 
-    scaler = StandardScaler()
-    matrix_job_standard = scaler.fit_transform(matrix_job)
-    matrix_type_standard = scaler.transform(matrix_type)
-
-    job_score = np.dot(matrix_job_standard, matrix_type_standard.T)[0]
+    job_score = np.dot(matrix_job, matrix_type.T)[0]
+    min_value = min(job_score)
+    max_value = max(job_score)
+    job_score = [(value - min_value) / (max_value - min_value) for value in job_score]
     sorted_indices = np.argsort(job_score)
     matrix_type = np.mean(matrix_type, axis=0)
     top_3_indices = sorted_indices[-4:][::-1]
-    print(job_titles
-          )
     top_jobs = [job_titles[top_3_indices[1]], job_titles[top_3_indices[2]], job_titles[top_3_indices[3]]]
+    top_scores = [job_score[top_3_indices[1]], job_score[top_3_indices[2]], job_score[top_3_indices[3]]]
 
     return jsonify({
         'matrix_job': matrix_job.tolist(),
@@ -213,7 +214,8 @@ def handle_job_title_comparison():
         'city_name': city_name[:10],
         'city_times': city_times[:10],
         'top_jobs': top_jobs,
-        'salary': int(df_job['Avg Monthly Salary'][0])
+        'salary': int(df_job['Avg Monthly Salary'][0]),
+        'top_scores': top_scores
     })
 
 

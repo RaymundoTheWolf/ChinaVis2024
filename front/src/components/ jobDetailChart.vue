@@ -13,8 +13,10 @@
     </div>
     <div class="content-container">
       <div class="charts-container">
+        <div class="job-info">
+         <div>{{ this.searchedSalary }}</div>
+        </div>
         <percentageChart ref="percentageChart" class="percentageChart"/>
-        <div ref="radarChart" class="radarChart"></div>
       </div>
       <div class="final-container">
         <div class="details-container">
@@ -40,6 +42,7 @@
 import axios from 'axios';
 import * as echarts from 'echarts'; 
 import percentageChart from './percentageChart.vue';
+import { EventBus } from './eventBus';
 
 export default {
   components: {
@@ -51,7 +54,6 @@ export default {
       skillPreference: [0.5, 0.5, 0.5],
       avgSkillPreference: [0.3, 0.3, 0.3],
       selectedJobTitle: '',
-      radarChart: null,
       typeName: '',
       searchedSalary: 0,
       cityName: ['J722', 'Q598', 'H610', 'K115'],
@@ -66,8 +68,6 @@ export default {
   mounted() {
     this.typeName = 'type_MpUmNW';
     this.getCheckBoxData();
-    this.radarChart = echarts.init(this.$refs.radarChart);
-    this.renderRadarChart();
     this.pieChart = echarts.init(this.$refs.pieChart);
     this.renderPieChart();
     this.barChart = echarts.init(this.$refs.barChart);
@@ -108,41 +108,17 @@ export default {
           this.maxSalary = response.data.max_salary;
           this.minSalary = response.data.min_salary;
           this.topJobs = response.data.top_jobs.flat();
-          this.renderRadarChart();
           this.renderPieChart();
           this.renderBarChart();
-          console.log(this.topJobs)
+          EventBus.$emit('salary', this.searchedSalary);
+          EventBus.$emit('radar-data', {
+            avgSkillPreference: this.avgSkillPreference,
+            skillPreference: this.skillPreference
+          });
         })
-      this.$refs.percentageChart.updateChartOption();
       sessionStorage.setItem('selectedJobTitle', this.selectedJobTitle);
       localStorage.setItem('salaryPercentage', this.searchedSalary);
-    },
-    renderRadarChart() {
-      const option = {
-        radar: {
-          indicator: [
-            { name: 'City', max: 1 },
-            { name: 'Experience', max: 1 },
-            { name: 'Education', max: 1 },
-          ],
-          center: ['50%', '50%'],
-          radius: '60%'
-        },
-        series: [{
-          type: 'radar',
-          data: [
-            {
-              value: this.skillPreference, 
-              name: 'Skill Performance'
-            },
-            {
-              value: this.avgSkillPreference, 
-              name: 'Average Skill Performance'
-            }
-          ]
-        }]
-      };
-      this.radarChart.setOption(option);
+      EventBus.$emit('salary', this.searchedSalary);
     },
     renderPieChart() {
       this.pieChart.clear();
@@ -236,22 +212,32 @@ export default {
   width: 10%; /* 设置按钮的宽度 */
   height: 80%;
   margin-left: 1%;
+  flex-direction: column;
+  align-items: center;
 }
 
 #job-detail-chart .content-container {
   display: flex;
-  width: 100%;
+  width: 95%;
   height: 100%;
+  padding-left: 2%;
 }
 
 #job-detail-chart .percentageChart {
-  width: 100%;
-  height: 60%;
+  margin-left: 10%;
+  width: 80%;
+  height: 100%;
 }
 
-#job-detail-chart .radarChart {
-  width: 100%;
-  height: 40%;
+#job-detail-chart .job-info {
+  margin-left: 10%;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: 'cursive'; /* 设置花字字体 */
+  margin-top: 15%;
+  text-align: center;
+  width: 80%;
+  height: 2%; 
 }
 
 #job-detail-chart .charts-container {
@@ -264,7 +250,7 @@ export default {
 #job-detail-chart .details-container {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 50%;
 }
 
 #job-detail-chart .pie-chart{
@@ -282,7 +268,7 @@ export default {
 #job-detail-chart .top-jobs-container{
   width: 100%;
   height: 50%;
-
+  text-align: center; 
 }
 
 #job-detail-chart .final-container {
