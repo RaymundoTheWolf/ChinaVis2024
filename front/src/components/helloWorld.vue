@@ -6,16 +6,16 @@
       <top-header />
       <div class="fir">
         <!-- 第一行 -->
-            <!-- 地区画像 -->
-            <div class="fir_box1">
-              <dv-border-box-12>
-                <h1>地区画像</h1>
-              </dv-border-box-12>
-            </div>
             <!-- 发展动态 -->
-            <div class="fir_box2">
+            <div class="fir_box1">
               <dv-border-box-12 style="padding-top: 10px">
                 <h1>发展动态</h1>
+              </dv-border-box-12>
+            </div>
+            <!-- 地区画像 -->
+            <div class="fir_box2">
+              <dv-border-box-12>
+                <h1>地区画像</h1>
               </dv-border-box-12>
             </div>
             <!-- 学历3D图 -->
@@ -154,18 +154,18 @@ a {
 }
 
 #index .thr {
-  height: 40%;
+  height: 30%;
   width: 100%;
   display: flex;
   flex-direction: row;
 }
 #index .fir_box1 {
   height: 100%;
-  width: 60%;
+  width: 20%;
 }
 #index .fir_box2 {
   height: 100%;
-  width: 20%;
+  width: 60%;
 }
 #index .fir_box3 {
   height: 100%;
