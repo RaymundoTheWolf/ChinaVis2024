@@ -27,7 +27,6 @@
     },
     methods: {
       renderRadarChart() {
-        console.log("收到")
         const option = {
           radar: {
             indicator: [
