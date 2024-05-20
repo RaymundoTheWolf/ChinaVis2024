@@ -7,8 +7,14 @@
   <script>
   import * as echarts from 'echarts';
   import axios from 'axios';
+  import { EventBus } from './eventBus';
   
   export default {
+	created(){
+		EventBus.$on('fresh-data', (newValue) => {
+        this.freshData(newValue)
+      });
+	},
 	data() {
 	  return {
 		scatterData: null,
@@ -41,6 +47,18 @@
 		  }));
 		  this.setOption();
 		}
+	  },
+	  freshData(new_type){
+		axios.post('http://127.0.0.1:5000/3d_scatter_data',{
+				field : new_type
+                })
+                .then(response => {
+					this.scatterData = response.data.job_dict;
+					this.renderScatterChart();
+                })
+                .catch(error => {
+                    console.error('Error sending scatter data:', error);
+                });
 	  },
 	  setOption() {
 		const chartDom = document.getElementById('main');
@@ -142,7 +160,10 @@
 		};
   
 		myChart.setOption(option);
-	  }
+	  },
+	  beforeDestroy(){
+      	EventBus.$off('fresh-data', this.freshData);
+    }
 	}
   };
   </script>
