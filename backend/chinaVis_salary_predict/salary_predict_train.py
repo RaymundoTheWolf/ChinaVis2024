@@ -149,6 +149,7 @@ for epoch in range(num_epochs):
     correct = 0
     total = 0
 
+torch.save(model.state_dict(), 'lstm_salary_predict_model.pth')
 
 model.eval()
 test_loss = 0.0

@@ -197,6 +197,12 @@ def handle_job_title_comparison():
     matrix_type = (matrix_type - means) / std_devs
 
     job_score = np.dot(matrix_job, matrix_type.T)[0]
+
+    def softmax(x):
+        e_x = np.exp(x - np.max(x))
+        return e_x / e_x.sum(axis=0)
+
+    job_score = softmax(job_score)
     min_value = min(job_score)
     max_value = max(job_score)
     job_score = [(value - min_value) / (max_value - min_value) for value in job_score]
@@ -286,6 +292,11 @@ def handle_job_parallel():
     # 返回结果
     return jsonify({"data": data_array.tolist(), "job": job_titles_list})
 
+
+@app.route('/job_line', methods=['POST'])
+def handle_job_line():
+    data = request.json
+    print(data)
 
 
 if __name__ == '__main__':

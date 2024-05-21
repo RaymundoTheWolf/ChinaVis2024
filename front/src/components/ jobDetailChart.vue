@@ -24,13 +24,16 @@
           <div class='bar-chart' ref="barChart"></div>
         </div>
         <div class="top-jobs-container">
-          <div
-            v-for="(job, index) in topJobs"
-            :key="index"
-            class="job-name"
-            @click="selectJob(job)"
-          >
-            {{ job }}
+          <ringChart ref="ringChart" class="ringChart"/>
+          <div class="job-names-container">
+            <div
+              v-for="(job, index) in topJobs"
+              :key="index"
+              class="job-name"
+              @click="selectJob(job)"
+            >
+              {{ job }}
+            </div>
           </div>
         </div>
       </div>
@@ -42,11 +45,13 @@
 import axios from 'axios';
 import * as echarts from 'echarts'; 
 import percentageChart from './percentageChart.vue';
+import ringChart from './ringChart.vue';
 import { EventBus } from './eventBus';
 
 export default {
   components: {
-    percentageChart
+    percentageChart,
+    ringChart,
   },
   data() {
     return {
@@ -115,6 +120,11 @@ export default {
             avgSkillPreference: this.avgSkillPreference,
             skillPreference: this.skillPreference
           });
+          EventBus.$emit('top-jobs', {
+            score: response.data.top_scores.flat(),
+            job: response.data.top_jobs.flat()
+          });
+          EventBus.$emit('line-job', response.data.top_jobs.flat());
         })
       sessionStorage.setItem('selectedJobTitle', this.selectedJobTitle);
       localStorage.setItem('salaryPercentage', this.searchedSalary);
@@ -169,7 +179,14 @@ export default {
         },
         yAxis: {
           type: 'category',
-          data: ['Min Salary', 'Max Salary']
+          data: []
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: (params) => {
+            const labels = ['min salary', 'max salary'];
+            return `${labels[params.dataIndex]}: ${params.value}`;
+          }
         },
         series: [
           {
@@ -200,17 +217,18 @@ export default {
 #job-detail-chart .container {
   display: flex;
   width: 100%;
-  height: 20%;
+  height: 10%;
 }
 
 #job-detail-chart .select {
   width: 40%; /* 设置选择框的宽度 */
+  height: 100%;
   margin-left: 20%;
 }
 
 #job-detail-chart .search-button {
   width: 10%; /* 设置按钮的宽度 */
-  height: 80%;
+  height: 100%;
   margin-left: 1%;
   flex-direction: column;
   align-items: center;
@@ -220,21 +238,22 @@ export default {
   display: flex;
   width: 95%;
   height: 100%;
-  padding-left: 2%;
+  padding-left: 10%;
+  padding-bottom: 2%;
 }
 
 #job-detail-chart .percentageChart {
-  margin-left: 10%;
+  margin-left: 20%;
   width: 80%;
   height: 100%;
 }
 
 #job-detail-chart .job-info {
-  margin-left: 10%;
+  margin-left: 20%;
   font-size: 25px;
   font-weight: bold;
   font-family: 'cursive'; /* 设置花字字体 */
-  margin-top: 15%;
+  margin-top: 40%;
   text-align: center;
   width: 80%;
   height: 2%; 
@@ -243,32 +262,20 @@ export default {
 #job-detail-chart .charts-container {
   display: flex;
   flex-direction: column;
-  width: 30%;
-  height: 100%
-}
-
-#job-detail-chart .details-container {
-  display: flex;
-  width: 100%;
-  height: 50%;
+  width: 20%;
+  height: 110%
 }
 
 #job-detail-chart .pie-chart{
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
+  margin-top: 2%;
 }
 
 #job-detail-chart .bar-chart{
-  margin-left: 10px;
-  width: 100%;
-  height: 100%;
-
-}
-
-#job-detail-chart .top-jobs-container{
-  width: 100%;
-  height: 50%;
-  text-align: center; 
+  width: 150%;
+  height: 110%;
+  margin-top: -1.5%;
 }
 
 #job-detail-chart .final-container {
@@ -278,15 +285,40 @@ export default {
   height: 100%;
 }
 
+#job-detail-chart .details-container {
+  display: flex;
+  width: 100%;
+  height: 50%;
+}
+
+#job-detail-chart .top-jobs-container{
+  width: 100%;
+  height: 50%;
+  display: flex;
+}
+
+#job-detail-chart .ringChart {
+  width: 50%;
+  height: 100%;
+  padding-bottom: 4%;
+}
+
+#job-detail-chart .job-names-container {
+  display: flex;
+  flex-direction: column; /* 设置纵向排列 */
+  width: 50%; /* 调整宽度以控制纵向排列的间距 */
+  height: 100%;
+  padding-bottom: 2%;
+  margin-top: 6%;
+  margin-left: -5%;
+}
+
 #job-detail-chart .job-name {
+  text-align: center; /* 居中对齐 */
   font-size: 10%;
   font-weight: bold;
   font-family: 'cursive'; /* 设置花字字体 */
   color: #9894a7;
-  margin-top: 1%;
-  width: 100%;
-  height: 30%;
-  margin-left: 20%;
 }
 </style>
 
