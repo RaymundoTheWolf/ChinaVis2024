@@ -1,5 +1,7 @@
 import importlib
 
+import joblib
+import torch
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import numpy as np
@@ -7,7 +9,6 @@ import json
 import mysql.connector
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
-from sklearn.preprocessing import StandardScaler
 
 from scatter_data import Jsonfy
 
@@ -115,10 +116,10 @@ def send_checkbox_data():
         host="localhost",
         user="root",
         port="3306",
-        password="123456",
+        password="a21340201152044",
         database="JobWanted"
     )
-    query = f"SELECT job_title FROM rec_inf WHERE company_type = '{type_name}'"
+    query = f"SELECT job_title FROM rec_inf WHERE company_type = '{type_name}' LIMIT 50"
     cursor = conn.cursor()
     cursor.execute(query)
 
@@ -128,7 +129,7 @@ def send_checkbox_data():
     # 关闭数据库连接
     cursor.close()
     conn.close()
-    return jsonify(results[:1000])
+    return jsonify(results[:100])
 
 
 def fetch_data(query, param):
@@ -136,7 +137,7 @@ def fetch_data(query, param):
         host="localhost",
         user="root",
         port="3306",
-        password="123456",
+        password="a21340201152044",
         database="JobWanted"
     )
     cursor = conn.cursor()
@@ -156,13 +157,16 @@ def handle_job_title_comparison():
 
     query_job = "SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE job_title = %s"
     query_type = "SELECT city, experience, education, company, `Avg Monthly Salary` FROM rec_inf WHERE company_type = %s"
+    query_all = f"SELECT job_title FROM rec_inf WHERE company_type = %s"
 
     with ThreadPoolExecutor() as executor:
         future_job = executor.submit(fetch_data, query_job, job_title)
         future_type = executor.submit(fetch_data, query_type, type_name)
+        future_all = executor.submit(fetch_data, query_all, type_name)
 
         results_job = future_job.result()
         results_type = future_type.result()
+        job_titles = future_all.result()
 
     df_job = pd.DataFrame(results_job, columns=['city', 'experience', 'education', 'company', 'Avg Monthly Salary'])
     df_type = pd.DataFrame(results_type, columns=['city', 'experience', 'education', 'company', 'Avg Monthly Salary'])
@@ -209,6 +213,7 @@ def handle_job_title_comparison():
     sorted_indices = np.argsort(job_score)
     matrix_type = np.mean(matrix_type, axis=0)
     top_3_indices = sorted_indices[-4:][::-1]
+    print(top_3_indices)
     top_jobs = [job_titles[top_3_indices[1]], job_titles[top_3_indices[2]], job_titles[top_3_indices[3]]]
     top_scores = [job_score[top_3_indices[1]], job_score[top_3_indices[2]], job_score[top_3_indices[3]]]
 
@@ -239,7 +244,7 @@ def handle_job_parallel():
         host="localhost",
         user="root",
         port="3306",
-        password="123456",
+        password="a21340201152044",
         database="JobWanted"
     )
     cursor = conn.cursor()
@@ -296,7 +301,71 @@ def handle_job_parallel():
 @app.route('/job_line', methods=['POST'])
 def handle_job_line():
     data = request.json
-    print(data)
+    job1 = data.get('job1')
+    job2 = data.get('job2')
+    job3 = data.get('job3')
+
+    # 连接数据库
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        port="3306",
+        password="a21340201152044",
+        database="JobWanted"
+    )
+
+    # 查询数据库
+    cursor = conn.cursor()
+    query = "SELECT job_title, city, company, company_type FROM rec_inf WHERE job_title IN (%s, %s, %s)"
+    cursor.execute(query, (job1, job2, job3))
+    results = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    city_array = []
+    company_array = []
+    company_type_array = []
+
+    for i in range(3):
+        job_title, city, company, company_type = results[i]
+        city_array.append(city)
+        company_array.append(company)
+        company_type_array.append(company_type)
+
+    job_titles = np.load('../data/job_titles.npy')[::-1]
+    cities = np.load('../data/cities.npy')[::-1]
+    companies = np.load('../data/company.npy')[::-1]
+    company_types = np.load('../data/company_type.npy')[::-1]
+
+    city_indices = [np.where(cities == city)[0][0] / len(cities) for city in city_array]
+    company_indices = [np.where(companies == company)[0][0] / len(companies) for company in company_array]
+    company_type_indices = [np.where(company_types == company_type)[0][0] / len(company_types) for company_type in company_type_array]
+
+    job1_index = np.where(job_titles == job1)[0][0] / len(job_titles)
+    job2_index = np.where(job_titles == job2)[0][0] / len(job_titles)
+    job3_index = np.where(job_titles == job3)[0][0] / len(job_titles)
+
+    # 加载随机森林模型
+    rf_model = joblib.load('../chinaVis_salary_predict/xgboost_salary_predict_model.pkl')
+
+    exp = [0, 0.2, 0.4, 0.6, 0.8]
+    job_indices = [job1_index, job2_index, job3_index]
+    predictions = {'job1': [], 'job2': [], 'job3': []}
+    job_keys = ['job1', 'job2', 'job3']
+
+    for job_key, index in zip(job_keys, range(len(job_indices))):
+        for experience in exp:
+            feature_vector = np.array([job_indices[index], city_indices[index], experience, experience, company_indices[index]]).reshape(1, -1)
+            prediction = rf_model.predict(feature_vector)
+            predictions[job_key].append(int(prediction[0]))
+
+    print(predictions)
+
+    return {
+        'job1_pre': predictions['job1'],
+        'job2_pre': predictions['job2'],
+        'job3_pre': predictions['job3']
+    }
 
 
 if __name__ == '__main__':
