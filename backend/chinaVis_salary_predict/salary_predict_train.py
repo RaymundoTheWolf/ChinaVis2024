@@ -1,11 +1,12 @@
-import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, TensorDataset
-from sklearn.model_selection import train_test_split
-import mysql.connector
 import numpy as np
-from salary_predict_model import CNN_Salary_Predict, LSTM_Salary_Predict, Transformer_Salary_Predict
+import mysql.connector
+import torch
+from sklearn.model_selection import train_test_split
+from xgboost import XGBClassifier  # Import XGBoost
+from sklearn.metrics import accuracy_score
+import joblib  # Used for saving and loading models
 
+# Load data
 job_titles = np.load('../data/job_titles.npy')[::-1]
 cities = np.load('../data/cities.npy')[::-1]
 company = np.load('../data/company.npy')[::-1]
@@ -14,8 +15,8 @@ education = np.load('../data/education.npy')[::-1]
 company_type = np.load('../data/company_type.npy')[::-1]
 
 
+# Load data from database
 def load_data_from_database():
-    # 连接数据库
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -24,29 +25,24 @@ def load_data_from_database():
         database="JobWanted"
     )
 
-    # 定义SQL查询
     sql_query = """
         SELECT job_title, city, experience, education, company, company_type, `Avg Monthly Salary`
         FROM rec_inf
     """
 
-    # 执行查询
     cursor = conn.cursor()
     cursor.execute(sql_query)
 
-    # 获取结果
     data = cursor.fetchall()
 
-    # 关闭数据库连接
     conn.close()
 
     return data
 
 
-# 从数据库加载数据
 data_from_db = load_data_from_database()
 
-# 将job_titles转换为字典，便于查找索引
+# Convert job_titles to dictionary for lookup
 job_titles_dict = {title: index / len(job_titles) for index, title in enumerate(job_titles)}
 cities_dict = {city: index / len(cities) for index, city in enumerate(cities)}
 experience_dict = {exp: index / len(experience) for index, exp in enumerate(experience)}
@@ -54,8 +50,8 @@ education_dict = {edu: index / len(education) for index, edu in enumerate(educat
 company_dict = {comp: index / len(company) for index, comp in enumerate(company)}
 company_type_dict = {ctype: index / len(company_type) for index, ctype in enumerate(company_type)}
 
-# 将数据转换为NumPy数组
-data_array = np.zeros((len(data_from_db), 7))  # 初始化一个数组来保存数据
+# Convert data to NumPy array
+data_array = np.zeros((len(data_from_db), 6))
 for i, row in enumerate(data_from_db):
     job_title = row[0]
     city = row[1]
@@ -65,7 +61,6 @@ for i, row in enumerate(data_from_db):
     company_type = row[5]
     avg_monthly_salary = row[6]
 
-    # 将每一列转换为索引位置/列的长度
     job_title_index = job_titles_dict.get(job_title, -1)
     city_index = cities_dict.get(city, -1)
     experience_index = experience_dict.get(experience, -1)
@@ -73,96 +68,36 @@ for i, row in enumerate(data_from_db):
     company_index = company_dict.get(company, -1)
     company_type_index = company_type_dict.get(company_type, -1)
 
-    data_array[i] = [job_title_index * 0.66,
-                     city_index * 0.24,
-                     experience_index * 0.38,
-                     education_index * 0.25,
-                     company_index * 0.63,
-                     company_type_index * 0.32, avg_monthly_salary]
+    data_array[i] = [job_title_index,
+                     city_index,
+                     experience_index,
+                     education_index,
+                     company_index, avg_monthly_salary]
 
-# 定义每个区间的最小和最大工资
-salary_segments = [(0, 5000), (5000, 6500), (6500, 8500), (8500, 12500), (12500, 300000)]
+# Define salary segments
+salary_segments = [(0, 5500), (5500, 7500), (7500, 10500), (10500, 300000)]
 
-# 初始化label数组
+# Initialize label array
 labels = np.zeros(len(data_from_db))
 
-# 将每个`Avg Monthly Salary`的值映射到对应的标签
+# Map 'Avg Monthly Salary' to corresponding label
 for i, salary in enumerate(data_array[:, -1]):
     for j, segment in enumerate(salary_segments):
         if segment[0] <= salary < segment[1]:
             labels[i] = j
             break
 
-# 将data_array和labels转换为PyTorch张量
-data_tensor = torch.tensor(data_array[:, :6], dtype=torch.float32)
-label_tensor = torch.tensor(labels, dtype=torch.long)
+# Split data_array and labels into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(data_array[:, :5], labels, test_size=0.2, random_state=42)
 
-# 划分训练集和测试集
-train_data, test_data, train_labels, test_labels = train_test_split(data_tensor, label_tensor, test_size=0.2,
-                                                                    random_state=42)
+# Define and train XGBoost model
+model = XGBClassifier(n_estimators=200, random_state=42, max_depth=6)  # Change model to XGBClassifier
+model.fit(X_train, y_train)
 
-# 将数据封装成TensorDataset
-train_dataset = TensorDataset(train_data, train_labels)
-test_dataset = TensorDataset(test_data, test_labels)
+# Save the model
+joblib.dump(model, '../../../../VisProject/backend/chinaVis_salary_predict/xgboost_salary_predict_model.pkl')
 
-# 定义模型
-model = LSTM_Salary_Predict(6, 8)
-
-# 定义损失函数和优化器
-criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(params=model.parameters(), lr=0.0008)
-
-# 定义超参数
-num_epochs = 10
-
-# 定义DataLoader
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-test_loader = DataLoader(test_dataset)
-
-# 训练模型
-running_loss = 0.0
-correct = 0
-total = 0
-
-for epoch in range(num_epochs):
-    model.train()
-    times = 0
-    for i, (inputs, labels) in enumerate(train_loader, 1):
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-
-        _, predicted = torch.max(outputs, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-        running_loss += loss.item()
-        times += 1
-        if i % 2000 == 0:
-            print(f"Epoch [{epoch + 1}/{num_epochs}], steps: {i}, Avg Loss: {loss.item():.4f}")
-
-    avg_loss = running_loss / times
-    accuracy = correct / total
-    print(f"Epoch [{epoch + 1}/{num_epochs}], Avg Loss: {avg_loss:.4f}, Accuracy: {100 * accuracy:.2f}%")
-    running_loss = 0.0
-    correct = 0
-    total = 0
-
-torch.save(model.state_dict(), 'lstm_salary_predict_model.pth')
-
-model.eval()
-test_loss = 0.0
-correct = 0
-total = 0
-
-with torch.no_grad():
-    for inputs, labels in test_loader:
-        outputs = model(inputs)
-        _, predicted = torch.max(outputs, 0)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-
-test_accuracy = correct / total
-
-print(f"Test Acc: {100 * test_accuracy:.2f}%")
+# Evaluate the model
+y_pred = model.predict(X_test)
+test_accuracy = accuracy_score(y_test, y_pred)
+print(f"Test Accuracy: {100 * test_accuracy:.2f}%")

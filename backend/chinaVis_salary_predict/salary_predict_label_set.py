@@ -32,13 +32,13 @@ def get_salary_ranges():
     salaries = [salary[0] for salary in salaries]
 
     # 计算每个段的大小
-    segment_size = len(salaries) // 5
+    segment_size = len(salaries) // 3
     salary_ranges = []
 
-    for i in range(5):
+    for i in range(3):
         start_index = i * segment_size
         end_index = start_index + segment_size
-        if i == 4:  # 最后一段
+        if i == 2:  # 最后一段
             end_index = len(salaries)
         segment_salaries = salaries[start_index:end_index]
         salary_range = (min(segment_salaries), max(segment_salaries))
