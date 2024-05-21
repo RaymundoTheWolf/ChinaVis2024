@@ -24,17 +24,8 @@
           <div class='bar-chart' ref="barChart"></div>
         </div>
         <div class="top-jobs-container">
+          <radarChart ref="lineChart" class="lineChart"/>
           <ringChart ref="ringChart" class="ringChart"/>
-          <div class="job-names-container">
-            <div
-              v-for="(job, index) in topJobs"
-              :key="index"
-              class="job-name"
-              @click="selectJob(job)"
-            >
-              {{ job }}
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -43,15 +34,19 @@
 
 <script>
 import axios from 'axios';
-import * as echarts from 'echarts'; 
+import * as echarts from 'echarts';
 import percentageChart from './percentageChart.vue';
 import ringChart from './ringChart.vue';
+import lineChart from './lineChart.vue';
+import radarChart from './radar.vue'
 import { EventBus } from './eventBus';
 
 export default {
   components: {
     percentageChart,
     ringChart,
+    lineChart,
+    radarChart
   },
   data() {
     return {
@@ -77,6 +72,11 @@ export default {
     this.renderPieChart();
     this.barChart = echarts.init(this.$refs.barChart);
     this.renderBarChart();
+    EventBus.$on('fresh-data', (newValue)=>{
+      this.typeName = newValue,
+      this.getCheckBoxData()
+    });
+
   },
   methods: {
     selectJob(job) {
@@ -256,7 +256,7 @@ export default {
   margin-top: 40%;
   text-align: center;
   width: 80%;
-  height: 2%; 
+  height: 2%;
 }
 
 #job-detail-chart .charts-container {
@@ -283,6 +283,7 @@ export default {
   flex-direction: column;
   width: 70%;
   height: 100%;
+  padding-left: 5%;
 }
 
 #job-detail-chart .details-container {
@@ -303,22 +304,10 @@ export default {
   padding-bottom: 4%;
 }
 
-#job-detail-chart .job-names-container {
-  display: flex;
-  flex-direction: column; /* 设置纵向排列 */
-  width: 50%; /* 调整宽度以控制纵向排列的间距 */
-  height: 100%;
-  padding-bottom: 2%;
-  margin-top: 6%;
-  margin-left: -5%;
-}
-
-#job-detail-chart .job-name {
-  text-align: center; /* 居中对齐 */
-  font-size: 10%;
-  font-weight: bold;
-  font-family: 'cursive'; /* 设置花字字体 */
-  color: #9894a7;
+#job-detail-chart .lineChart {
+  width: 50%;
+  height: 120%;
+  padding-bottom: 4%;
 }
 </style>
 

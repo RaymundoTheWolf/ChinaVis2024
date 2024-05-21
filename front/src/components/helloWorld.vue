@@ -1,4 +1,3 @@
-
 <template>
   <div id="index" ref="appRef">
     <dv-full-screen-container class="bg">
@@ -45,7 +44,7 @@
             <!-- 未知图 -->
             <div class="thr_box1">
               <dv-border-box-12>
-                <radar-chart/>
+                <line-chart/>
               </dv-border-box-12>
             </div>
             <!-- 职位分析图 -->
@@ -74,6 +73,7 @@ import mapChart from "./mapChart.vue";
 import titleChart from "./titleChart.vue";
 import jobDetailChart from "./ jobDetailChart.vue";
 import radarChart from "./radar.vue"
+import lineChart from './lineChart.vue';
 export default {
   components: {
     topHeader,
@@ -82,7 +82,8 @@ export default {
     mapChart,
     titleChart,
     jobDetailChart,
-    radarChart
+    radarChart,
+    lineChart
 },
   data () {
     return {}
@@ -178,11 +179,11 @@ a {
 }
 #index .thr_box1 {
   height: 100%;
-  width: 20%;
+  width: 30%;
 }
 #index .thr_box2 {
   height: 100%;
-  width: 50%;
+  width: 40%;
 }
 #index .thr_box3 {
   height: 100%;

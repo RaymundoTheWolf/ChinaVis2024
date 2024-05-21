@@ -31,8 +31,8 @@
           radar: {
             indicator: [
               { name: 'City', max: 1 },
-              { name: 'Experience', max: 1 },
-              { name: 'Education', max: 1 },
+              { name: 'Exp', max: 1 },
+              { name: 'Edu', max: 1 },
             ],
             center: ['50%', '50%'],
             radius: '60%'

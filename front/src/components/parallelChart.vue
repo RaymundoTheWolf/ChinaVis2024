@@ -50,7 +50,6 @@
             .then(response => {
                 this.paralleldata = response.data.data;
                 this.allJobTitle = response.data.job;
-                console.log(this.allJobTitle);//删除
                 this.initChart();
             })
             .catch(error => {
