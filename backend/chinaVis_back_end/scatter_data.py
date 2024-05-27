@@ -70,6 +70,7 @@ def process_data(field):
 
 def Jsonfy(field):
     res = process_data(field)
+    """
     # 提取不同职位名称
     job_title = [record[0] for record in res]
     # 获得地区得分
@@ -82,6 +83,7 @@ def Jsonfy(field):
     company = [record[4] for record in res]
     # 获得平均薪资
     job_avg_salary = [record[5] for record in res]
+    """
 
     # 创建该职业字典 职位:工资,公司,三维指标(地区，经验，学历)
     job_dict = {record[0]: [record[5], record[4], [record[1], record[2], record[3]]] for record in res}

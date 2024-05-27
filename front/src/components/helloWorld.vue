@@ -14,13 +14,13 @@
             <!-- 地区画像 -->
             <div class="fir_box2">
               <dv-border-box-12>
-                <h1>地区画像</h1>
+                <stack-chart/>
               </dv-border-box-12>
             </div>
             <!-- 学历3D图 -->
           <div class="fir_box3">
             <dv-border-box-12 style="padding-top: 10px">
-                <scatterChart/>
+                <scatter-chart/>
             </dv-border-box-12>
           </div>
       </div>
@@ -41,7 +41,7 @@
       </div>
       <div class="thr">
         <!-- 第三行 -->
-            <!-- 未知图 -->
+            <!-- 预测图 -->
             <div class="thr_box1">
               <dv-border-box-12>
                 <line-chart/>
@@ -68,12 +68,14 @@
 <script>
 import topHeader from "./topHeader.vue";
 import parallelChart from "./parallelChart.vue";
+import stackChart from './stackChart.vue';
 import scatterChart from "./scatterChart.vue";
 import mapChart from "./mapChart.vue";
 import titleChart from "./titleChart.vue";
 import jobDetailChart from "./ jobDetailChart.vue";
-import radarChart from "./radar.vue"
+import radarChart from "./radar.vue";
 import lineChart from './lineChart.vue';
+
 export default {
   components: {
     topHeader,
@@ -83,7 +85,8 @@ export default {
     titleChart,
     jobDetailChart,
     radarChart,
-    lineChart
+    lineChart,
+    stackChart,
 },
   data () {
     return {}

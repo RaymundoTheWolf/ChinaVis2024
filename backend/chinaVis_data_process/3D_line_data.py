@@ -70,21 +70,23 @@ def process_data(field):
 
 def Jsonfy(field):
     res = process_data(field)
+    """ 
     # 提取不同职位名称
-    job_title = [record[0] for record in res]
-    # 获得地区得分
-    city_score = [record[1] for record in res]
-    # 获得经验评分
-    exp_score = [record[2] for record in res]
-    # 获得学历评分
-    edu_score = [record[3] for record in res]
-    # 获得公司信息
-    company = [record[4] for record in res]
-    # 获得平均薪资
-    job_avg_salary = [record[5] for record in res]
+        job_title = [record[0] for record in res]
+        # 获得地区得分
+        city_score = [record[1] for record in res]
+        # 获得经验评分
+        exp_score = [record[2] for record in res]
+        # 获得学历评分
+        edu_score = [record[3] for record in res]
+        # 获得公司信息
+        company = [record[4] for record in res]
+        # 获得平均薪资
+        job_avg_salary = [record[5] for record in res]
+    """
 
     # 创建该职业字典 职位:工资,公司,三维指标(地区，经验，学历)
-    job_dict = {record[0]: [record[5], record[4], [record[1],record[2],record[3]]] for record in res}
+    job_dict = {record[0]: [record[5], record[4], [record[1], record[2], record[3]]] for record in res}
     with open('../data/scatterDate/job_dict.json', 'w') as f:
         json.dump(job_dict, f)
     return job_dict

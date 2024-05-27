@@ -1,6 +1,6 @@
 <template>
-	<div ref="scatter" class="scatter-chart">
-	  <div id="main" style="width: 100%; height: 100%;"></div>
+	<div id="scatter-chart">
+	  <div id="scattermain" style="width: 100%; height: 100%;"></div>
 	</div>
   </template>
   
@@ -61,8 +61,8 @@
                 });
 	  },
 	  setOption() {
-		const chartDom = document.getElementById('main');
-		const myChart = echarts.init(chartDom, 'dark');
+		const chartDom = document.getElementById('scattermain');
+		const myChart = echarts.init(chartDom);
   
 		// 计算工资的最小值和最大值
 		const salaries = this.processed_data.map(item => item.salary);
@@ -169,7 +169,7 @@
   </script>
   
   <style scoped>
-  .scatter-chart {
+  #scatter-chart {
 	width: 100%;
 	height: 100%;
   }

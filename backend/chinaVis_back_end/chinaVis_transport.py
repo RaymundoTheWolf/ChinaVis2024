@@ -11,6 +11,7 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 
 from scatter_data import Jsonfy
+from stack_data_processing import StackDataJsonfy
 
 app = Flask(__name__)
 CORS(app)  # 允许跨域请求
@@ -93,6 +94,31 @@ def get_3d_scatter_data():
 
         # 将数据转换为 JSON 格式并发送给前端
         return jsonify(scatter_data)
+
+
+@app.route('/stack_data', methods=['GET', 'POST'])
+def get_stack_data():
+    if request.method == 'GET':
+        # 从文件中读取字典数据
+        with open('../data/stack_data/stack_dict.json', 'r') as f:
+            stack_dict = json.load(f)
+        # 构建要发送给前端的数据字典
+        stack_data = {
+            'stack_dict': stack_dict
+        }
+        # 将数据转换为 JSON 格式并发送给前端
+        return jsonify(stack_data)
+
+    elif request.method == 'POST':
+        data = request.json
+        city_name = data.get('city')
+        stack_dict = StackDataJsonfy(city_name)
+        stack_data = {
+            'stack_dict': stack_dict
+        }
+
+        # 将数据转换为 JSON 格式并发送给前端
+        return jsonify(stack_data)
 
 
 @app.route('/field_click', methods=['POST'])
@@ -339,7 +365,8 @@ def handle_job_line():
 
     city_indices = [np.where(cities == city)[0][0] / len(cities) for city in city_array]
     company_indices = [np.where(companies == company)[0][0] / len(companies) for company in company_array]
-    company_type_indices = [np.where(company_types == company_type)[0][0] / len(company_types) for company_type in company_type_array]
+    company_type_indices = [np.where(company_types == company_type)[0][0] / len(company_types) for company_type in
+                            company_type_array]
 
     job1_index = np.where(job_titles == job1)[0][0] / len(job_titles)
     job2_index = np.where(job_titles == job2)[0][0] / len(job_titles)
@@ -355,7 +382,9 @@ def handle_job_line():
 
     for job_key, index in zip(job_keys, range(len(job_indices))):
         for experience in exp:
-            feature_vector = np.array([job_indices[index], city_indices[index], experience, experience, company_indices[index]]).reshape(1, -1)
+            feature_vector = np.array(
+                [job_indices[index], city_indices[index], experience, experience, company_indices[index]]).reshape(1,
+                                                                                                                   -1)
             prediction = rf_model.predict(feature_vector)
             predictions[job_key].append(int(prediction[0]))
 
