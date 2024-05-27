@@ -72,7 +72,7 @@ import stackChart from './stackChart.vue';
 import scatterChart from "./scatterChart.vue";
 import mapChart from "./mapChart.vue";
 import titleChart from "./titleChart.vue";
-import jobDetailChart from "./ jobDetailChart.vue";
+import jobDetailChart from "./jobDetailChart.vue";
 import radarChart from "./radar.vue";
 import lineChart from './lineChart.vue';
 
