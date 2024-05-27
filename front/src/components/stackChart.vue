@@ -11,7 +11,7 @@ import { EventBus } from './eventBus';
 
 export default {
   created() {
-    EventBus.$on('fresh-data', this.freshData);
+    EventBus.$on('value-fresh', this.freshData);
   },
   data() {
     return {
@@ -25,18 +25,11 @@ export default {
   },
   mounted() {
     this.getData();
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize);
-    EventBus.$off('fresh-data', this.freshData);
+    EventBus.$off('value-fresh', this.freshData);
   },
   methods: {
-    handleResize() {
-      // 当窗口大小改变时重新渲染图表
-      this.renderStackChart();
-    },
     getData() {
       axios.get('http://127.0.0.1:5000/stack_data')
         .then(response => {
@@ -137,17 +130,17 @@ export default {
         grid: {
           left: '3%',
           right: '4%',
-          bottom: '10%', // 调整grid的bottom以给dataZoom留出空间
+          bottom: '10%', 
           containLabel: true
         },
         xAxis: [
           {
             type: 'category',
             boundaryGap: false,
-            data: this.categories, // 使用所有行业类别作为x轴数据
+            data: this.categories,
             axisLabel: {
-              rotate: 45, // 旋转角度
-              margin: 20 // 调整x轴标签的高度
+              rotate: 45,
+              margin: 20
             }
           }
         ],
@@ -174,7 +167,7 @@ export default {
     freshData(newCity) {
       axios.post('http://127.0.0.1:5000/stack_data', { city: newCity })
         .then(response => {
-          this.stackData = response.data.stack_dict; // 注意这里的 key
+          this.stackData = response.data.stack_dict;
           this.processData();
         })
         .catch(error => {

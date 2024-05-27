@@ -1,5 +1,4 @@
 import json
-
 import mysql.connector
 import numpy as np
 
@@ -19,13 +18,13 @@ def load_data_from_database_by_city(city):
         sql_query = """
             SELECT company_type, company, AVG(`Avg Monthly Salary`) AS avg_salary
             FROM rec_inf
-            WHERE city = %s
+            WHERE city LIKE %s
             GROUP BY company, company_type;
         """
 
         # 执行查询
         cursor = conn.cursor()
-        cursor.execute(sql_query, (city,))
+        cursor.execute(sql_query, (city + '%',))  # 在参数中使用模糊匹配符，仅匹配以 city 开头的城市名
 
         # 获取结果
         data = cursor.fetchall()
@@ -46,25 +45,12 @@ def process_data(city):
         company_name = row[1]
         avg_salary = float(row[2])
 
-        data_array[i] = [company_type,
-                         company_name,
-                         avg_salary]
+        data_array[i] = [company_type, company_name, avg_salary]
 
     return data_array
 
 
 def StackDataJsonfy(city):
     res = process_data(city)
-    """
-    # 行业名
-    company_type = [record[0] for record in res]
-    # 公司名
-    company_name = [record[1] for record in res]
-    # 平均薪资
-    avg_salary = [record[2] for record in res]
-    """
-
     stack_dict = {record[0]: [record[1], record[2]] for record in res}
-    with open('../data/stack_data/stack_dict.json', 'w') as f:
-        json.dump(stack_dict, f)
     return stack_dict
