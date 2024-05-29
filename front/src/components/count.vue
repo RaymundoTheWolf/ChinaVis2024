@@ -15,7 +15,7 @@ import axios from 'axios';
 import { EventBus } from './eventBus.js';  
   
 export default {  
-    name: 'count-chart',    
+    name: 'count',    
     data() {    
         return {    
             cityData: null, // 改为存储从API获取的全部数据    
