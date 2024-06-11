@@ -8,9 +8,7 @@
             <!-- 发展动态 -->
             <div class="fir_box1">
               <dv-border-box-12 style="padding-top: 10px">
-                <h1>发展动态</h1>
-                 <count/>
-                 <barChartComponent/>
+                <count/>
               </dv-border-box-12>
             </div>
             <!-- 地区画像 -->
@@ -78,7 +76,6 @@ import jobDetailChart from "./jobDetailChart.vue";
 import radarChart from "./radar.vue";
 import lineChart from './lineChart.vue';
 import count from "./count.vue";
-import barChartComponent from "./barChart.vue"
 export default {
   components: {
     topHeader,
@@ -91,7 +88,6 @@ export default {
     lineChart,
     stackChart,
     count,
-    barChartComponent
 },
   data () {
     return {}

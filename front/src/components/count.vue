@@ -1,20 +1,23 @@
 <template>  
     <div id="count-chart" class="count-chart">  
-        <div ref="chartContainer" style="width: 600px; height: 600px; margin-top: 40px; margin-left: 120px;">
-            <div class="click-in">当前显示地区为: {{ currentCityName }}</div>
-            <div>
-                <span>职业数量：{{ cityCount.toString() }}</span>
-                <span>  平均薪资：{{ cityAvgSalary.toString() }}</span>
-            </div>
-        </div>  
+        <div ref="chartContainer" class = "show">
+            <span>当前显示地区为: {{ currentCityName }}</span>
+            <span>职业数量：{{ cityCount.toString() }}</span>
+            <span>平均薪资：{{ cityAvgSalary.toString() }}</span>
+        </div>
+        <bar-chart class="bar-chart"/>
     </div>  
 </template>  
   
 <script>  
 import axios from 'axios';  
-import { EventBus } from './eventBus.js';  
+import { EventBus } from './eventBus.js';
+import barChart from './barChart.vue'
   
-export default {  
+export default {
+    components: {
+    barChart,
+},
     name: 'count',    
     data() {    
         return {    
@@ -79,17 +82,23 @@ export default {
 };  
 </script>
 <style>
-.click-in {
-  position: relative;
-  top: -10px;
-  left: 10px;
-  background-color: #f0f0f0;
-  padding: 5px;
-  border-radius: 5px;
-  z-index: 1000;
-  width: 200px;
-  height: 30px;
-  color: black; 
-  pointer-events: none; /* 可选：确保这个元素不响应鼠标事件 */
+#count-chart{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#count-chart .show{
+    width: 100%;
+    height: 20%;
+    margin-left: 5%;
+    display: flex;
+    flex-direction: column;
+}
+#count-chart .bar-chart {
+    width: 100%;
+    height: 80%;
+    display: flex;
 }
 </style>

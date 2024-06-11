@@ -217,7 +217,7 @@ export default {
 #job-detail-chart .container {
   display: flex;
   width: 100%;
-  height: 10%;
+  height: 15%;
 }
 
 #job-detail-chart .select {
@@ -255,6 +255,7 @@ export default {
   font-family: 'cursive'; /* 设置花字字体 */
   margin-top: 40%;
   text-align: center;
+  color: #22ac38;
   width: 80%;
   height: 2%;
 }

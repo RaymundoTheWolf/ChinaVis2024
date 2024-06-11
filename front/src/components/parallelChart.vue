@@ -198,7 +198,7 @@
 #parallel-chart .input-button-container {
     display: flex;
     flex-direction: row;
-    height: 12%;
+    height: 15%;
     width: 100%;
     margin-bottom: 20px;
 }

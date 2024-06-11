@@ -180,14 +180,11 @@ export default {
 }
 #title-chart .click-info {
   margin-top: 10px;
-  margin-left: 10%;
-  background-color: #f0f0f0;
+  margin-left: 30%;
   padding: 5px;
   border-radius: 5px;
-  z-index: 1000;
   width: 80%;
   height: 10%;
-  color: black; 
   pointer-events: none; /* 可选：确保这个元素不响应鼠标事件 */
 }
 </style>

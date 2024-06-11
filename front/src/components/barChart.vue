@@ -1,5 +1,5 @@
 <template>  
-    <div ref="chartContainer" style="width: 550px; height: 400px; margin-top: -600px; margin-left: -10px;"></div>  
+    <div id = "bar-chart" ref="chartContainer"></div>  
 </template>  
   
 <script>  
@@ -115,3 +115,8 @@ export default {
     }  
 };  
 </script>
+<style>
+
+
+
+</style>

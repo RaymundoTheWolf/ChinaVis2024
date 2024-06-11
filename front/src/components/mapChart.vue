@@ -5,7 +5,7 @@
       <div class="map">  
         <div ref="chart" class="chart-map"></div>  
         <!-- 添加一个按钮，位于地图正下方 -->  
-        <el-button class="renderbutton" @click="backToPreviousMap">返回上一级</el-button>  
+        <el-button class="renderbutton" type="primary" @click="backToPreviousMap">返回</el-button>  
       </div>  
       <!-- 折线图容器，位于地图右侧 -->  
       <div ref="lineChart" class="chart-line"></div>  
@@ -234,11 +234,11 @@ export default {
       // 设置动画持续时间和其他动画参数  
       const animationOpts = {  
         animationDuration: 1000, // 设置动画持续时间为1000毫秒  
-        animationEasing: 'cubicInOut' // 设置缓动函数  
+        animationEasing: 'quarticInOut' // 设置缓动函数  
       };  
       // 配置项  
       const option = {
-        backgroundColor: 'transparent', // 设置背景颜色为透明
+        backgroundColor: (0,0,0,0), // 设置背景颜色为透明
         series: [
           {
             type: 'treemap',
@@ -311,9 +311,8 @@ export default {
 }
 #map-chart .renderbutton {
   display: flex;
-  width: 25%;
-  height: 10%;
-
+  width: 17%;
+  height: 12%;
 }
 
 #map-chart .chart-line {
