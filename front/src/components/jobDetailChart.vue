@@ -9,12 +9,14 @@
           :value="item"
         ></el-option>
       </el-select>
-      <el-button class="search-button" type="primary" @click="search">搜索</el-button>
+      <el-button class="search-button" type="primary" @click="search">
+        <i class="el-icon-search"></i>
+      </el-button>
     </div>
     <div class="content-container">
       <div class="charts-container">
         <div class="job-info">
-         <div>{{ this.searchedSalary }}</div>
+          <div>{{ this.searchedSalary }}</div>
         </div>
         <percentageChart ref="percentageChart" class="percentageChart"/>
       </div>
@@ -213,7 +215,6 @@ export default {
   flex-direction: column;
 }
 
-
 #job-detail-chart .container {
   display: flex;
   width: 100%;
@@ -221,13 +222,13 @@ export default {
 }
 
 #job-detail-chart .select {
-  width: 40%; /* 设置选择框的宽度 */
+  width: 40%;
   height: 100%;
   margin-left: 20%;
 }
 
 #job-detail-chart .search-button {
-  width: 10%; /* 设置按钮的宽度 */
+  width: 10%;
   height: 100%;
   margin-left: 1%;
   flex-direction: column;
@@ -252,7 +253,7 @@ export default {
   margin-left: 20%;
   font-size: 25px;
   font-weight: bold;
-  font-family: 'cursive'; /* 设置花字字体 */
+  font-family: 'cursive';
   margin-top: 40%;
   text-align: center;
   color: #22ac38;
@@ -264,18 +265,18 @@ export default {
   display: flex;
   flex-direction: column;
   width: 20%;
-  height: 110%
+  height: 110%;
 }
 
-#job-detail-chart .pie-chart{
+#job-detail-chart .pie-chart {
   width: 90%;
   height: 90%;
   margin-top: 2%;
 }
 
-#job-detail-chart .bar-chart{
-  width: 150%;
-  height: 110%;
+#job-detail-chart .bar-chart {
+  width: 200%;
+  height: 120%;
   margin-top: -1.5%;
 }
 
@@ -285,6 +286,7 @@ export default {
   width: 70%;
   height: 100%;
   padding-left: 5%;
+  padding-bottom: 20px; 
 }
 
 #job-detail-chart .details-container {
@@ -293,22 +295,23 @@ export default {
   height: 50%;
 }
 
-#job-detail-chart .top-jobs-container{
+#job-detail-chart .top-jobs-container {
   width: 100%;
-  height: 50%;
+  height: calc(50%); 
   display: flex;
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 #job-detail-chart .ringChart {
   width: 50%;
   height: 100%;
-  padding-bottom: 4%;
 }
 
 #job-detail-chart .lineChart {
+  padding-top: 5px;
   width: 50%;
   height: 120%;
-  padding-bottom: 4%;
 }
 </style>
-
