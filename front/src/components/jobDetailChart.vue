@@ -57,7 +57,7 @@ export default {
       avgSkillPreference: [0.3, 0.3, 0.3],
       selectedJobTitle: '',
       typeName: '',
-      searchedSalary: 0,
+      searchedSalary: 5000,
       cityName: ['J722', 'Q598', 'H610', 'K115'],
       cityTimes: [1, 1, 1, 6],
       minSalary: 1000,
@@ -177,11 +177,16 @@ export default {
       const option = {
         xAxis: {
           type: 'value',
-          boundaryGap: [0, 0.01]
+          boundaryGap: [0, 0.01],
+          show:false
         },
         yAxis: {
+          nameGap: 20,
           type: 'category',
-          data: []
+          data: ['Max', 'Min'],
+          axisLabel: {
+            fontSize:9
+          }
         },
         tooltip: {
           trigger: 'item',
@@ -219,6 +224,7 @@ export default {
   display: flex;
   width: 100%;
   height: 15%;
+  padding-left: 10%;
 }
 
 #job-detail-chart .select {
@@ -254,9 +260,9 @@ export default {
   font-size: 25px;
   font-weight: bold;
   font-family: 'cursive';
-  margin-top: 40%;
+  margin-top: 50%;
   text-align: center;
-  color: #22ac38;
+  color: #dcdcdc;
   width: 80%;
   height: 2%;
 }
@@ -269,15 +275,17 @@ export default {
 }
 
 #job-detail-chart .pie-chart {
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
   margin-top: 2%;
 }
 
 #job-detail-chart .bar-chart {
   width: 200%;
-  height: 120%;
-  margin-top: -1.5%;
+  height: 140%;
+  margin-top: -5%;
+  left: 20%;
+  overflow: visible;
 }
 
 #job-detail-chart .final-container {
