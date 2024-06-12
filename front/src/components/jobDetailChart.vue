@@ -200,7 +200,7 @@ export default {
             type: 'bar',
             data: [this.minSalary, this.maxSalary],
             itemStyle: {
-              color: '#aba08c'
+              color: '#b8b9b3'
             },
             barWidth: '50%'
           }
@@ -239,6 +239,7 @@ export default {
   margin-left: 1%;
   flex-direction: column;
   align-items: center;
+  background-color: #b7b2d0;
 }
 
 #job-detail-chart .content-container {
@@ -259,8 +260,8 @@ export default {
   margin-left: 20%;
   font-size: 25px;
   font-weight: bold;
-  font-family: 'cursive';
-  margin-top: 50%;
+  font-family: 'Arial', sans-serif;
+  margin-top: 40%;
   text-align: center;
   color: #dcdcdc;
   width: 80%;
@@ -283,8 +284,8 @@ export default {
 #job-detail-chart .bar-chart {
   width: 200%;
   height: 140%;
-  margin-top: -5%;
-  left: 20%;
+  margin-top: -3%;
+  left: 10%;
   overflow: visible;
 }
 

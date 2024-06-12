@@ -1,15 +1,14 @@
 <template>  
-    <!-- 创建一个容器来放置图表和按钮 -->    
-    <div id="map-chart">  
-      <!-- 地图容器 -->  
-      <div class="map">  
-        <div ref="chart" class="chart-map"></div>  
-        <!-- 添加一个按钮，位于地图正下方 -->  
-        <el-button class="renderbutton" type="primary" @click="backToPreviousMap">返回</el-button>  
-      </div>  
-      <!-- 折线图容器，位于地图右侧 -->  
-      <div ref="lineChart" class="chart-line"></div>  
-    </div>
+  <div id="map-chart">  
+    <!-- 地图容器 -->  
+    <div class="map">  
+      <div ref="chart" class="chart-map"></div>  
+      <!-- 添加一个带有返回箭头图标的按钮 -->  
+      <el-button class="renderbutton" type="primary" icon="el-icon-arrow-left" @click="backToPreviousMap"></el-button>  
+    </div>  
+    <!-- 折线图容器，位于地图右侧 -->  
+    <div ref="lineChart" class="chart-line"></div>  
+  </div>
 </template>    
   
 <script>  
@@ -178,7 +177,7 @@ export default {
       // 找出合并平均薪资的最大值和最小值
       const maxAvgSalary = Math.max(...Object.values(mergedAvgSalary));
       const minAvgSalary = Math.min(...Object.values(mergedAvgSalary));  
-  
+      
       // 创建 ECharts 实例（只在首次调用时）  
       if (!this.currentChart) {  
         const chartDom = this.$refs.chart;  
@@ -189,7 +188,6 @@ export default {
         backgroundColor: 'transparent', // 设置背景颜色为透明
         series: [
           {
-            
             type: 'treemap',
             breadcrumb: { show: false},
             roam: false, //是否开启拖拽漫游（移动和缩放）
@@ -205,16 +203,16 @@ export default {
                 return echarts.color.modifyHSL('#4682B4', colorRatio * 100, 0);
               })(),
               emphasis: {  
-              // 当鼠标悬停时，可以改变颜色、边框等视觉效果  
-              itemStyle: {  
-                // 例如，改变边框宽度或颜色  
-                borderWidth: 2, // 可以根据需要调整  
-                borderColor: 'rgba(0,0,0,0.5)', // 可以设置更明显的颜色  
-                // 如果需要模拟放大效果，可以尝试改变阴影  
-                shadowBlur: 10, // 阴影大小  
-                shadowColor: 'rgba(0, 0, 0, 0.5)' // 阴影颜色  
-               }  
-             }
+                // 当鼠标悬停时，可以改变颜色、边框等视觉效果  
+                itemStyle: {  
+                  // 例如，改变边框宽度或颜色  
+                  borderWidth: 2, // 可以根据需要调整  
+                  borderColor: 'rgba(0,0,0,0.5)', // 可以设置更明显的颜色  
+                  // 如果需要模拟放大效果，可以尝试改变阴影  
+                  shadowBlur: 10, // 阴影大小  
+                  shadowColor: 'rgba(0, 0, 0, 0.5)' // 阴影颜色  
+                 }  
+               }
             }))
           }
         ]
@@ -287,32 +285,42 @@ export default {
 <style>
 #map-chart {
   display: flex;
-    width: 100%;
-    height: 100%;
-    padding: 20px; /* 内边距，可根据需要调整 */
-    box-sizing: border-box; /* 使得padding不会影响整体尺寸 */
-    flex-direction: row;
+  width: 100%;
+  height: 100%;
+  padding: 20px; /* 内边距，可根据需要调整 */
+  box-sizing: border-box; /* 使得padding不会影响整体尺寸 */
+  flex-direction: row;
 }
 
 #map-chart .map {
-    display: flex;
-    width: 50%;
-    height: 100%;
-    flex-direction: column;
-    margin-right: 10px;
-    align-items: center;
+  display: flex;
+  width: 50%;
+  height: 100%;
+  flex-direction: column;
+  margin-right: 10px;
+  align-items: center;
+  position: relative; /* 使得按钮可以相对定位 */
 }
 
 #map-chart .chart-map {
-    display: flex;
-    width: 100%;
-    height: 100%;
-
-}
-#map-chart .renderbutton {
   display: flex;
-  width: 17%;
-  height: 12%;
+  width: 100%;
+  height: 100%;
+}
+
+#map-chart .renderbutton {
+  position: absolute;
+  top: 20px; /* 距离顶部10px */
+  left: 20px; /* 距离左边10px */
+  z-index: 100; /* 确保按钮在图表之上 */
+  display: flex;
+  width: 40px; /* 调整为合适的宽度 */
+  height: 40px; /* 调整为合适的高度 */
+  border-radius: 50%; /* 使按钮变为圆形 */
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  color: #000;
 }
 
 #map-chart .chart-line {
@@ -320,5 +328,5 @@ export default {
   width: 50%;
   height: 100%;
 }
-
 </style>
+

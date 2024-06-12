@@ -1,14 +1,14 @@
 <template>  
     <div id="count-chart" class="count-chart">  
-        <div ref="chartContainer" class = "show">
-            <span>当前显示地区为: {{ currentCityName }}</span>
-            <span>职业数量：{{ cityCount.toString() }}</span>
-            <span>平均薪资：{{ cityAvgSalary.toString() }}</span>
+        <div ref="chartContainer" class="show">
+            <span class="city-info">当前显示地区为: {{ currentCityName }}</span>
+            <span class="city-info">职业数量：{{ cityCount.toString() }}</span>
+            <span class="city-info">平均薪资：{{ Math.round(cityAvgSalary).toString() }}</span>
         </div>
         <bar-chart class="bar-chart"/>
     </div>  
 </template>  
-  
+
 <script>  
 import axios from 'axios';  
 import { EventBus } from './eventBus.js';
@@ -81,12 +81,15 @@ export default {
     }  
 };  
 </script>
+
 <style>
 #count-chart{
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 
 #count-chart .show{
@@ -95,7 +98,18 @@ export default {
     margin-left: 5%;
     display: flex;
     flex-direction: column;
+    font-family: 'Arial', sans-serif;
+    color: #daf0dd;
+    align-items: center;
 }
+
+#count-chart .city-info {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #888888;
+}
+
 #count-chart .bar-chart {
     width: 100%;
     height: 80%;

@@ -22,6 +22,7 @@
       EventBus.$on('radar-data', (data) => {
             this.avgSkillPreference = data.avgSkillPreference;
             this.skillPreference = data.skillPreference;
+            console.log(this.avgSkillPreference)
             this.renderRadarChart()
         });
     },
@@ -35,7 +36,12 @@
               { name: 'Edu', max: 1 },
             ],
             center: ['50%', '50%'],
-            radius: '60%'
+            radius: '60%',
+            name: {
+                textStyle: {
+                    fontSize: 9
+                }
+            }
           },
           series: [{
             type: 'radar',

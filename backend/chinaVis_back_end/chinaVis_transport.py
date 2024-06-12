@@ -1,7 +1,7 @@
 import importlib
 
 import joblib
-
+import torch
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import numpy as np
@@ -222,6 +222,7 @@ def handle_job_title_comparison():
 
     matrix_job = df_job[['city_index', 'experience_index', 'education_index']].to_numpy()
     matrix_type = df_type[['city_index', 'experience_index', 'education_index']].to_numpy()
+    matrix_type_copy = matrix_type
     means = np.mean(matrix_type, axis=0)
     std_devs = np.std(matrix_type, axis=0)
     matrix_type = (matrix_type - means) / std_devs
@@ -239,13 +240,12 @@ def handle_job_title_comparison():
     sorted_indices = np.argsort(job_score)
     matrix_type = np.mean(matrix_type, axis=0)
     top_3_indices = sorted_indices[-4:][::-1]
-    print(top_3_indices)
     top_jobs = [job_titles[top_3_indices[1]], job_titles[top_3_indices[2]], job_titles[top_3_indices[3]]]
     top_scores = [job_score[top_3_indices[1]], job_score[top_3_indices[2]], job_score[top_3_indices[3]]]
 
     return jsonify({
         'matrix_job': matrix_job.tolist(),
-        'matrix_title': matrix_type.tolist(),
+        'matrix_title': matrix_type_copy.tolist(),
         'max_salary': int(max_salary),
         'min_salary': int(min_salary),
         'city_name': city_name[:10],

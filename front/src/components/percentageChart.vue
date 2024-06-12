@@ -111,6 +111,9 @@ export default {
             symbolClip: true,
             symbolBoundingData: this.bodyMax,
             label: this.salary,
+            itemStyle: {
+              color: '#4595cc'
+            },
             data: [
               {
                 value: 150 * this.getLocalStorageData(params),
@@ -126,7 +129,7 @@ export default {
             symbolBoundingData: this.bodyMax,
             animationDuration: 0,
             itemStyle: {
-              color: '#ccc'
+              color: '#9ec5ea'
             },
             data: [
               {

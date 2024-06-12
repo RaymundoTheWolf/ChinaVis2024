@@ -21,6 +21,9 @@
             detail: {
               valueAnimation: false,
               offsetCenter: ['0%', '-20%']
+            },
+            itemStyle: {
+              color: '#e68b81'
             }
           },
           {
@@ -32,6 +35,9 @@
             detail: {
               valueAnimation: false,
               offsetCenter: ['0%', '10%']
+            },
+            itemStyle: {
+              color: '#eaaa60'
             }
           },
           {
@@ -43,6 +49,9 @@
             detail: {
               valueAnimation: false,
               offsetCenter: ['0%', '40%']
+            },
+            itemStyle: {
+              color: '#78b0d5'
             }
           }
         ]
