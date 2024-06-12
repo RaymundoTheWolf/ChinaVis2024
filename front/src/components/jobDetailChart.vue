@@ -1,7 +1,7 @@
 <template>
   <div id="job-detail-chart">
     <div class="container">
-      <el-select v-model="selectedJobTitle" placeholder="请选择或输入职位" clearable filterable remote :remote-method="getCheckBoxData" class="select">
+      <el-select v-model="selectedJobTitle" placeholder="请选择或输入职位" clearable allow-create filterable remote :remote-method="getCheckBoxData" class="select">
         <el-option
           v-for="item in jobTitles"
           :key="item"
@@ -310,7 +310,7 @@ export default {
   display: flex;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
-  padding: 5px;
+  padding-bottom: 2%;
 }
 
 #job-detail-chart .ringChart {
