@@ -1,32 +1,33 @@
 <template>
   <div id="parallel-chart">
     <div class="input-button-container">
-      <el-select 
-        v-model="inputJobTitle" 
-        placeholder="请选择或输入职位" 
-        clearable 
-        filterable 
-        remote 
-        allow-create
-        multiple 
-        :remote-method="getCheckBoxData" 
-        class="input" 
-        collapse-tags
-        @change="handleSelectChange"
-      >
-        <el-option
-          v-for="item in jobTitles"
-          :key="item"
-          :label="item"
-          :value="item"
-        ></el-option>
-      </el-select>
+      <div class = "input">
+        <el-select 
+          v-model="inputJobTitle" 
+          placeholder="请选择或输入职位" 
+          clearable 
+          filterable 
+          remote 
+          allow-create
+          multiple 
+          :remote-method="getCheckBoxData"
+          collapse-tags
+          @change="handleSelectChange"
+        >
+          <el-option
+            v-for="item in jobTitles"
+            :key="item"
+            :label="item"
+            :value="item"
+          ></el-option>
+        </el-select>
+      </div>
       <el-button class="search-button" type="primary" @click="shift">
         <i class="el-icon-search"></i>
       </el-button>
     </div>
     <!-- 创建一个容器来放置图表 -->
-    <div ref="chart" class="chart" style="width: 100%; height: 100%;"></div>
+    <div ref="chart" class="chart"></div>
   </div>
 </template>
 
@@ -245,8 +246,8 @@ export default {
   display: flex;
   width: 100%;
   height: 100%;
-  padding: 20px; /* 内边距，可根据需要调整 */
-  box-sizing: border-box; /* 使得padding不会影响整体尺寸 */
+  margin-top: 5px;
+  margin-left: 2%;
   flex-direction: column;
 }
 
@@ -254,15 +255,15 @@ export default {
 #parallel-chart .input-button-container {
   display: flex;
   flex-direction: row;
-  height: 5%;
+  height: 0%;
   width: 100%;
   margin-bottom: 20px;
 }
 
 /* 输入框样式 */
-#parallel-chart .input {
+#parallel-chart .input-button-container.input {
   flex-shrink: 1; /* 输入框将占据剩余空间 */
-  height: 10%;
+  height: 100%;
   flex-basis: 50%;
 }
 
@@ -273,5 +274,11 @@ export default {
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+#parallel-chart .chart {
+  width: 100%;
+  height: 92%;
+  display: flex;
 }
 </style>
