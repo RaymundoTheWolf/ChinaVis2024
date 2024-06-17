@@ -269,11 +269,9 @@ export default {
 #parallel-chart .search-button {
   width: 10%;
   height: 100%;
-  padding: 10px;
   margin-left: 1%;
   align-items: center;
   display: flex;
   justify-content: center;
-  background-color: #b7b2d0;
 }
 </style>

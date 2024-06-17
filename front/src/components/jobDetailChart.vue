@@ -239,7 +239,6 @@ export default {
   margin-left: 1%;
   flex-direction: column;
   align-items: center;
-  background-color: #b7b2d0;
 }
 
 #job-detail-chart .content-container {
