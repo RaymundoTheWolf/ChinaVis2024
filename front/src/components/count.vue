@@ -99,7 +99,6 @@ export default {
     display: flex;
     flex-direction: column;
     font-family: 'Arial', sans-serif;
-    color: #daf0dd;
     align-items: center;
 }
 
@@ -107,7 +106,6 @@ export default {
     font-size: 1.5em;
     margin-bottom: 5px;
     font-weight: bold;
-    text-shadow: 1px 1px 2px #888888;
 }
 
 #count-chart .bar-chart {

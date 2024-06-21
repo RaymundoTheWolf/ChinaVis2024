@@ -95,7 +95,7 @@ export default {
                         yAxisIndex: 0,    
                         data: countLetter,  
                         itemStyle: {  
-                            color: '#d9b1b7'  
+                            color: '#3963C8'  
                         },     
                     },
                     {  

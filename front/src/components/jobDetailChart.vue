@@ -252,7 +252,7 @@ export default {
 #job-detail-chart .percentageChart {
   margin-left: 20%;
   width: 80%;
-  height: 100%;
+  height: 80%;
 }
 
 #job-detail-chart .job-info {
