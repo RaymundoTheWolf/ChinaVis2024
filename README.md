@@ -13,6 +13,9 @@ DataInsight是一家领先的数据分析咨询公司，专注于为企业提供
 - 后端：Flask
 - 可视化工具：Echarts
 
+## 关于数据
+- ChinaVis2024已经提供原数据，文件中`jobwanted.sql`是经过我们数据处理后的SQL文件，新增了一些便于后续处理的列
+
 ## How To Use
 
 - `backend` 为python后端代码，运行`chinaVis_transport.py`开启后端
